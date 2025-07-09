@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import bboyImg from "../../../img/ElbowFreeze.jpg";
+import bboyImg from "../../../img/ElbowFreeze.JPG";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./InfoSectionGuest.css";
