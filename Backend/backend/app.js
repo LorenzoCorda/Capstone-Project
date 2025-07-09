@@ -14,8 +14,12 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // solo il tuo frontend
+    origin: [
+      "http://localhost:5173",
+      "https://capstone-project-bice-nu.vercel.app",
+    ], // solo il tuo frontend
     credentials: true, // se usi cookie o header con autenticazione
+    allowedHeaders: ["Authorization", "Content-Type"],
   })
 );
 
