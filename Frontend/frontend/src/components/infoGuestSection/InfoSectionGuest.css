@@ -1,0 +1,18 @@
+.custom-info-guest {
+  background-color: #2a84d2;
+}
+
+.custom-img {
+  max-height: 500px;
+  max-width: 450px;
+  border-radius: 12px;
+}
+
+/* .custom-info-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  
+} */

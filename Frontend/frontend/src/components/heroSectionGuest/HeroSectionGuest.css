@@ -1,0 +1,43 @@
+.hero-section {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+}
+.custom-title {
+  position: relative;
+  z-index: 1;
+  top: 25%;
+  transform: translateY(-50%);
+}
+.custom-title h1 {
+  font-family: "Bebas Neue", sans-serif;
+}
+
+.custom-p-btn {
+  position: relative;
+  z-index: 1;
+  top: 53%;
+  transform: translateY(-50%);
+}
+
+.custom-p-btn p {
+  font-family: "Urbanist", sans-serif;
+  text-transform: none;
+  line-height: 1.5;
+  font-size: 26px;
+}
+
+.btn-custom {
+  font-family: "Urbanist", sans-serif;
+  font-size: 18px;
+}

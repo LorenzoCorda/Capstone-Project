@@ -1,0 +1,19 @@
+.features-section {
+  background-color: #fff;
+}
+
+.custom-box img {
+  object-fit: cover;
+  max-height: 220px;
+}
+
+.custom-box h4 {
+  font-weight: 700;
+}
+
+.custom-box p {
+  color: #555;
+}
+.custom-content {
+  font-size: 21px;
+}
