@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import bboyImg from "../../../img/ElbowFreeze.JPG";
+/* import bboyImg from "../../../img/ElbowFreeze.JPG"; */
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./InfoSectionGuest.css";
@@ -40,7 +40,7 @@ const InfoSectionGuest = () => {
           data-aos-delay="160"
         >
           <img
-            src={bboyImg}
+            src="/img/ElbowFreeze.JPG"
             alt="Ballerino sorridente"
             className="custom-img"
           />
