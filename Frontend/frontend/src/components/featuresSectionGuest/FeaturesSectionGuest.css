@@ -7,12 +7,14 @@
   max-height: 220px;
 }
 
-.custom-box h4 {
-  font-weight: 700;
+.custom-box h3 {
+  font-weight: 600;
+  font-family: "Urbanist", sans-serif;
 }
 
 .custom-box p {
   color: #555;
+  font-family: "Urbanist", sans-serif;
 }
 .custom-content {
   font-size: 21px;

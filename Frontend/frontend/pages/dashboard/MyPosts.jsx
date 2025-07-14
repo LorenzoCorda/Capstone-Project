@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, Button, Spinner, Alert, Row, Col, Modal } from "react-bootstrap";
 import EditPostModal from "../../src/components/modals/EditPostModal";
+import { useNavigate } from "react-router-dom";
 
 const MyPosts = () => {
   const [myPosts, setMyPosts] = useState([]);
@@ -10,6 +11,7 @@ const MyPosts = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyPosts = async () => {
@@ -83,16 +85,29 @@ const MyPosts = () => {
       <h3 className="mb-4">I miei allenamenti</h3>
       <Row>
         {myPosts.map((post) => (
-          <Col key={post._id} xs={12} md={6} lg={3} className="mb-4">
+          <Col
+            key={post._id}
+            xs={12}
+            md={6}
+            lg={3}
+            className="mb-4 text-center"
+          >
             <Card className="shadow-sm h-100">
+              {post.image && (
+                <Card.Img
+                  variant="top"
+                  src={post.image}
+                  alt="Immagine del post"
+                  style={{
+                    height: "200px",
+                    objectFit: "cover",
+                    borderTopLeftRadius: "0.375rem",
+                    borderTopRightRadius: "0.375rem",
+                  }}
+                />
+              )}
               <Card.Body>
                 <Card.Title>{post.title}</Card.Title>
-                <Card.Text>{post.description}</Card.Text>
-
-                <p className="mb-1">
-                  <strong>Luogo:</strong>{" "}
-                  {post.location?.city || "Non specificata"}
-                </p>
                 {post.location?.address && (
                   <p className="mb-1">
                     <strong>Indirizzo:</strong> {post.location.address}
@@ -107,8 +122,8 @@ const MyPosts = () => {
                   </p>
                 )}
 
-                <Row className="mt-3">
-                  <Col>
+                <Row>
+                  <Col className="mb-3">
                     <Button
                       variant="outline-primary"
                       size="sm"
@@ -118,6 +133,15 @@ const MyPosts = () => {
                       }}
                     >
                       Modifica
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      variant="outline-success"
+                      size="sm"
+                      onClick={() => navigate(`/dashboard/posts/${post._id}`)}
+                    >
+                      Dettagli
                     </Button>
                   </Col>
                   <Col>

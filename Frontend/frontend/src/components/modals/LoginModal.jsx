@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // 👈 IMPORTA
 
 const LoginModal = ({ show, handleClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
+    setLoading(false);
+
     setError("");
   };
 
@@ -21,6 +25,8 @@ const LoginModal = ({ show, handleClose }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     setError("");
 
     try {
@@ -52,6 +58,8 @@ const LoginModal = ({ show, handleClose }) => {
       setError(err.message || "Errore durante il login");
 
       setPassword("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,9 +98,30 @@ const LoginModal = ({ show, handleClose }) => {
             <a href="/forgot-password">Password dimenticata?</a>
           </p>
 
-          <Button variant="primary" type="submit" className="w-100">
-            Accedi
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={loading}
+            className="w-100"
+          >
+            {loading ? (
+              <>
+                <Spinner
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  className="me-2"
+                />
+                Accesso...
+              </>
+            ) : (
+              "Accedi"
+            )}
           </Button>
+
+          {/*  <Button variant="primary" type="submit" className="w-100">
+            Accedi
+          </Button> */}
         </Form>
       </Modal.Body>
     </Modal>

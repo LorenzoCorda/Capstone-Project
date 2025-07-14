@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { Form, Button, Spinner, Alert, Card } from "react-bootstrap";
+import AddressAutocomplete from "../../src/components/forms/AddressAutocomplete";
+import { useGoogleMapsLoader } from "../../src/hooks/UseGoogleMapsLoader";
 
 const NewPost = () => {
+  const mapsLoaded = useGoogleMapsLoader();
+
   const [form, setForm] = useState({
     title: "",
     description: "",
-    city: "",
     address: "",
     date: "",
     maxParticipants: "",
-    /*   image: "", */
   });
 
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -21,6 +24,10 @@ const NewPost = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleRemoveImage = () => {
+    setImage(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -28,40 +35,49 @@ const NewPost = () => {
     setLoading(true);
 
     try {
+      const date = new Date(form.date);
+      const year = date.getFullYear();
+      if (year < 2025 || year.toString().length !== 4) {
+        setError("Inserisci un anno valido dal 2025 in poi (4 cifre)");
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem("token");
+      const formData = new FormData();
+
+      formData.append("title", form.title);
+      formData.append("description", form.description);
+      formData.append("address", form.address);
+      formData.append("date", form.date);
+      formData.append("maxParticipants", form.maxParticipants);
+
+      if (image) {
+        formData.append("image", image);
+      }
 
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/posts`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          title: form.title,
-          description: form.description,
-          location: {
-            city: form.city,
-            address: form.address,
-          },
-          date: form.date,
-          maxParticipants: form.maxParticipants,
-          /*  image: form.image, */
-        }),
+        body: formData,
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Errore nella creazione");
 
       setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+
       setForm({
         title: "",
         description: "",
-        city: "",
         address: "",
         date: "",
         maxParticipants: "",
-        /*  image: "", */
       });
+      setImage(null);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -73,13 +89,44 @@ const NewPost = () => {
     <div className="new-post">
       <h2 className="mb-4">Crea un nuovo allenamento</h2>
       <Card className="p-3">
-        <Form onSubmit={handleSubmit}>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {success && (
-            <Alert variant="success">Post creato con successo!</Alert>
-          )}
+        <Form onSubmit={handleSubmit} encType="multipart/form-data">
+          <Form.Group className="mb-3">
+            <Form.Label>Immagine del post</Form.Label>
+            {image && (
+              <div className="mt-2 d-flex flex-column align-items-center">
+                <p className="mb-1">Anteprima:</p>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Anteprima"
+                  style={{
+                    width: "100%",
+                    maxWidth: "200px",
+                    aspectRatio: "1 / 1",
+                    objectFit: "cover",
+                    borderRadius: "12px",
+                    border: "1px solid #dee2e6",
+                  }}
+                />
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  className="mt-2"
+                  onClick={handleRemoveImage}
+                >
+                  Rimuovi immagine
+                </Button>
+              </div>
+            )}
+            <Form.Control
+              type="file"
+              className="mt-4"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              required
+            />
+          </Form.Group>
 
-          <Form.Group className="mb-1">
+          <Form.Group className="mb-2">
             <Form.Label>Titolo</Form.Label>
             <Form.Control
               type="text"
@@ -90,7 +137,7 @@ const NewPost = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-1">
+          <Form.Group className="mb-2">
             <Form.Label>Descrizione</Form.Label>
             <Form.Control
               as="textarea"
@@ -101,29 +148,30 @@ const NewPost = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-1">
-            <Form.Label>Città</Form.Label>
-            <Form.Control
-              type="text"
-              name="city"
-              value={form.city}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-1">
+          <Form.Group className="mb-2">
             <Form.Label>Indirizzo</Form.Label>
-            <Form.Control
-              type="text"
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              required
-            />
+            {mapsLoaded ? (
+              <AddressAutocomplete
+                value={form.address}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, address: e.target.value }))
+                }
+                onSelect={(address, city) =>
+                  setForm((prev) => ({ ...prev, address, city }))
+                }
+                mapsLoaded={mapsLoaded}
+              />
+            ) : (
+              <Form.Control
+                type="text"
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+              />
+            )}
           </Form.Group>
 
-          <Form.Group className="mb-1">
+          <Form.Group className="mb-2">
             <Form.Label>Data e ora</Form.Label>
             <Form.Control
               type="datetime-local"
@@ -134,7 +182,7 @@ const NewPost = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-1">
+          <Form.Group className="mb-2">
             <Form.Label>Max partecipanti</Form.Label>
             <Form.Control
               type="number"
@@ -146,29 +194,20 @@ const NewPost = () => {
             />
           </Form.Group>
 
-          {/*  <Form.Group className="mb-1">
-            <Form.Label>Immagine URL (opzionale)</Form.Label>
-            <Form.Control
-              type="text"
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-            />
-          </Form.Group> */}
+          {error && <Alert variant="danger">{error}</Alert>}
+          {success && (
+            <Alert variant="success">Post creato con successo!</Alert>
+          )}
 
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={
-              !form.title.trim() ||
-              !form.description.trim() ||
-              !form.city.trim() ||
-              !form.address.trim() ||
-              !form.date ||
-              !form.maxParticipants
-            }
-          >
-            Pubblica
+          <Button type="submit" disabled={loading} className="mt-3">
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" className="me-2" />
+                Caricamento...
+              </>
+            ) : (
+              "Pubblica"
+            )}
           </Button>
         </Form>
       </Card>

@@ -6,15 +6,15 @@ const Footer = () => {
     <footer className="bg-dark text-light p-5">
       <Container>
         <Row>
-          <Col md={4} className="text-center">
-            <h4 className="custom-info-title">BreakMeet</h4>
+          <Col md={4} className="text-center custom-info-title">
+            <h4 className="">BreakMeet</h4>
             <p className="fs-5">
               Connetti ballerini, trova sessioni, costruisci la tua esperienza
               con altri ballerini.
             </p>
           </Col>
-          <Col md={4} className="text-center">
-            <h4 className="custom-info-title">Explore</h4>
+          <Col md={4} className="text-center custom-info-title">
+            <h4>Explore</h4>
             <ul className="list-unstyled">
               <li>
                 <a href="/" className="text-light fs-5 text-decoration-none">
@@ -31,8 +31,8 @@ const Footer = () => {
               </li>
             </ul>
           </Col>
-          <Col md={4} className="text-center">
-            <h4 className="custom-info-title">Contatti</h4>
+          <Col md={4} className="text-center custom-info-title">
+            <h4>Contatti</h4>
             <p className="fs-5">Email: breakmeet.contact@gmail.com</p>
           </Col>
         </Row>

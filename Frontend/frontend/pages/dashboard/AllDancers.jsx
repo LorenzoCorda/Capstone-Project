@@ -8,8 +8,8 @@ import {
   Pagination,
   Badge,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-// URL dell'immagine di default salvata su Cloudinary
 const DEFAULT_PROFILE_IMAGE =
   "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png";
 
@@ -19,6 +19,7 @@ const AllDancers = () => {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDancers = async () => {
@@ -52,6 +53,12 @@ const AllDancers = () => {
     setPage(number);
   };
 
+  const getValidImage = (url) => {
+    return typeof url === "string" && url.startsWith("http")
+      ? url
+      : DEFAULT_PROFILE_IMAGE;
+  };
+
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
   if (dancers.length === 0) return <p>Nessun ballerino trovato.</p>;
@@ -62,11 +69,21 @@ const AllDancers = () => {
       <Row>
         {dancers.map((user) => (
           <Col key={user._id} xs={12} md={6} lg={3} className="mb-4">
-            <Card className="shadow-sm h-100">
+            <Card
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/dashboard/dancers/${user._id}`)}
+              className="shadow-sm h-100"
+            >
               <Card.Img
-                src={user.profileImage || DEFAULT_PROFILE_IMAGE}
+                src={getValidImage(user.profileImage)}
                 alt={user.username}
-                className="rounded-circle custom-img-profile mx-auto d-block mt-3"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                  margin: "20px auto 10px",
+                }}
               />
               <Card.Body>
                 <Card.Title>{user.name}</Card.Title>

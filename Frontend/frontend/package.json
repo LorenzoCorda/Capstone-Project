@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.7",
     "aos": "^2.3.4",
     "bootstrap": "^5.3.7",
     "lucide-react": "^0.523.0",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.3"
+    "react-router-dom": "^7.6.3",
+    "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

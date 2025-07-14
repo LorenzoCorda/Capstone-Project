@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-/* import bboyImg from "../../../img/ElbowFreeze.JPG"; */
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./InfoSectionGuest.css";
@@ -23,7 +22,7 @@ const InfoSectionGuest = () => {
           data-aos="fade-right"
           data-aos-delay="160"
         >
-          <h1 className="fw-bold text-white display-4 mb-3">
+          <h1 className="custom-question fw-bold text-white display-4 mb-3">
             Perché BreakMeet?
           </h1>
           <p className="fs-2 text-white mb-4">

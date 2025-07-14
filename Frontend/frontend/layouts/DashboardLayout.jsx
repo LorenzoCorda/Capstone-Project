@@ -16,6 +16,8 @@ import "../layouts/DashboardLayout.css";
 
 const menuItems = [
   { to: "/dashboard", label: "Dashboard", icon: <Home size={24} /> },
+  { to: "/dashboard/profile", label: "Profilo", icon: <User size={24} /> },
+
   {
     to: "/dashboard/new-post",
     label: "Nuovo post",
@@ -37,7 +39,6 @@ const menuItems = [
     label: "Partecipazioni",
     icon: <Bookmark size={24} />,
   },
-  { to: "/dashboard/profile", label: "Profilo", icon: <User size={24} /> },
 ];
 
 const DashboardLayout = () => {
@@ -56,10 +57,8 @@ const DashboardLayout = () => {
       <Navigation />
 
       <div className="dashboard-layout d-flex" style={{ minHeight: "100vh" }}>
-        {/* Sidebar */}
         <div className="sidebar d-flex flex-column align-items-center p-1">
           <Nav className="flex-column gap-3 align-items-center w-100">
-            {/* Menu items normali */}
             {menuItems.map((item) => (
               <OverlayTrigger
                 key={item.to}
@@ -79,7 +78,6 @@ const DashboardLayout = () => {
               </OverlayTrigger>
             ))}
 
-            {/* Logout separato */}
             <OverlayTrigger
               placement="right"
               overlay={<Tooltip>Logout</Tooltip>}
@@ -102,7 +100,6 @@ const DashboardLayout = () => {
           </Nav>
         </div>
 
-        {/* Main Content */}
         <div
           className="main-content p-4"
           style={{ flexGrow: 1, backgroundColor: "#fff" }}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 
 const DEFAULT_IMAGE =
-  "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png"; // 👉 sostituisci con il tuo link reale
+  "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png";
 
 const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
   const [form, setForm] = useState({
@@ -11,10 +11,11 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
     bio: "",
     city: "",
     styles: "",
-    profileImage: "",
   });
 
   const fileInputRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState("");
+  const [newImageFile, setNewImageFile] = useState(null);
   const [removeImage, setRemoveImage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,11 +28,13 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
         bio: userData.bio || "",
         city: userData.city || "",
         styles: (userData.styles || []).join(", "),
-        profileImage: userData.profileImage || "",
       });
+
+      setPreviewImage(userData.profileImage || DEFAULT_IMAGE);
+      setNewImageFile(null);
       setRemoveImage(false);
     }
-  }, [userData]);
+  }, [userData, show]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,14 +44,15 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setForm((prev) => ({ ...prev, profileImage: previewUrl }));
+      setPreviewImage(URL.createObjectURL(file));
+      setNewImageFile(file);
       setRemoveImage(false);
     }
   };
 
   const handleRemoveImage = () => {
-    setForm((prev) => ({ ...prev, profileImage: "" }));
+    setPreviewImage(DEFAULT_IMAGE);
+    setNewImageFile(null);
     setRemoveImage(true);
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -63,30 +67,35 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const body = {
-        name: form.nome,
-        username: form.username,
-        bio: form.bio,
-        city: form.city,
-        styles: form.styles
-          .split(",")
-          .map((s) => s.trim())
-          .filter((s) => s !== ""),
-        profileImage: form.profileImage,
-        removeImage,
-      };
+      const formData = new FormData();
+      formData.append("name", form.nome);
+      formData.append("username", form.username);
+      formData.append("bio", form.bio);
+      formData.append("city", form.city);
+
+      form.styles
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s !== "")
+        .forEach((style) => formData.append("styles", style));
+
+      if (removeImage) {
+        formData.append("removeImage", "true");
+      }
+
+      if (newImageFile) {
+        formData.append("profileImage", newImageFile);
+      }
 
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(body),
+        body: formData,
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Errore aggiornamento");
 
       onSave(data.data);
@@ -110,7 +119,7 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
         <Form onSubmit={handleSubmit}>
           <div className="text-center mb-3">
             <img
-              src={form.profileImage || DEFAULT_IMAGE}
+              src={previewImage}
               alt="Anteprima"
               className="rounded-circle"
               style={{
@@ -129,7 +138,7 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
               style={{ display: "none" }}
             />
 
-            {form.profileImage && (
+            {previewImage !== DEFAULT_IMAGE && (
               <div>
                 <Button
                   variant="outline-danger"

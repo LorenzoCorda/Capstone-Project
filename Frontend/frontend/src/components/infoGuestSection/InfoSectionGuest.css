@@ -1,11 +1,16 @@
 .custom-info-guest {
   background-color: #2a84d2;
+  font-family: "Urbanist", sans-serif;
 }
 
 .custom-img {
   max-height: 500px;
   max-width: 450px;
   border-radius: 12px;
+}
+
+.custom-question {
+  font-family: "Bebas Neue", sans-serif;
 }
 
 /* .custom-info-text {

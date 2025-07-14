@@ -1,96 +1,226 @@
-import { useState, useEffect } from "react";
-import { Card, Spinner, Alert, Pagination, Row, Col } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  Button,
+  Spinner,
+  Alert,
+  Row,
+  Col,
+  Pagination,
+  Badge,
+} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
+  const [participatedPostIds, setParticipatedPostIds] = useState(new Set());
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [error, setError] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 6;
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(
-          `${
-            import.meta.env.VITE_SERVER_URL
-          }/posts?page=${currentPage}&pageSize=${pageSize}`
-        );
-        const data = await res.json();
+  const token = localStorage.getItem("token");
 
-        if (!res.ok) throw new Error(data.message || "Errore nel caricamento");
-
-        setPosts(data.posts || []);
-        setTotalPages(data.totalPages || 1);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [currentPage]);
-
-  const renderPagination = () => {
-    const items = [];
-    for (let page = 1; page <= totalPages; page++) {
-      items.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          onClick={() => setCurrentPage(page)}
-        >
-          {page}
-        </Pagination.Item>
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/posts?page=${page}&pageSize=6`
       );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      setPosts(data.posts);
+      setTotalPages(data.totalPages || 1);
+    } catch (err) {
+      setError(err.message);
     }
-    return <Pagination>{items}</Pagination>;
   };
 
-  if (loading) return <Spinner animation="border" variant="primary" />;
+  const fetchMyParticipations = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/participations/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      const ids = data.data.map((p) => p._id);
+      setParticipatedPostIds(new Set(ids));
+    } catch (err) {
+      console.error("Partecipazioni errore:", err.message);
+    }
+  };
+
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      setCurrentUser(data);
+    } catch (err) {
+      console.error("Errore fetch utente:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([
+      fetchPosts(),
+      fetchMyParticipations(),
+      fetchCurrentUser(),
+    ]).finally(() => setLoading(false));
+  }, [page]);
+
+  const handleParticipation = async (postId) => {
+    try {
+      const isParticipating = participatedPostIds.has(postId);
+
+      const url = `${import.meta.env.VITE_SERVER_URL}/participations${
+        isParticipating ? `/${postId}` : ""
+      }`;
+
+      const res = await fetch(url, {
+        method: isParticipating ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: isParticipating ? null : JSON.stringify({ postId }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      const updated = new Set(participatedPostIds);
+      isParticipating ? updated.delete(postId) : updated.add(postId);
+      setParticipatedPostIds(updated);
+    } catch (err) {
+      alert("Errore: " + err.message);
+    }
+  };
+
+  if (loading) return <Spinner animation="border" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
-  if (posts.length === 0) return <p>Nessun post disponibile.</p>;
 
   return (
-    <div className="all-posts">
+    <div>
       <h3 className="mb-4">Tutti gli allenamenti</h3>
       <Row>
-        {posts.map((post) => (
-          <Col key={post._id} xs={12} md={6} lg={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              {post.image && (
-                <Card.Img
-                  variant="top"
-                  src={post.image}
-                  style={{ maxHeight: "200px", objectFit: "cover" }}
-                />
-              )}
-              <Card.Body>
-                <Card.Title>{post.title}</Card.Title>
-                <Card.Text>{post.description}</Card.Text>
-                <p className="mb-1">
-                  <strong>Luogo:</strong> {post.location?.city || "N/D"}
-                </p>
-                <p className="mb-1">
-                  <strong>Data:</strong> {new Date(post.date).toLocaleString()}
-                </p>
-                {post.maxParticipants && (
-                  <p className="mb-1">
+        {posts.map((post) => {
+          const isAuthor = post.author?._id === currentUser?._id;
+          const isParticipating = participatedPostIds.has(post._id);
+          const isFull =
+            post.maxParticipants !== undefined &&
+            post.currentParticipantsCount >= post.maxParticipants;
+
+          return (
+            <Col key={post._id} xs={12} md={6} lg={4} className="mb-4">
+              <Card
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/dashboard/posts/${post._id}`)}
+                className="shadow-sm h-100"
+              >
+                {post.image && (
+                  <Card.Img
+                    variant="top"
+                    src={post.image}
+                    style={{
+                      height: "200px",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+
+                <Card.Body>
+                  <Card.Title>
+                    {post.title}{" "}
+                    {isAuthor && (
+                      <Badge bg="success" className="ms-2">
+                        Creato da te
+                      </Badge>
+                    )}
+                  </Card.Title>
+
+                  <p>
+                    <strong>Indirizzo:</strong> {post.location?.address}
+                  </p>
+
+                  <p>
+                    <strong>Data:</strong>{" "}
+                    {new Date(post.date).toLocaleString()}
+                  </p>
+                  <p>
                     <strong>Max partecipanti:</strong> {post.maxParticipants}
                   </p>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+                  <div className="d-flex justify-content-between align-items-center">
+                    {!isAuthor && (
+                      <Button
+                        variant={
+                          isParticipating
+                            ? "danger"
+                            : isFull
+                            ? "secondary"
+                            : "outline-success"
+                        }
+                        disabled={isFull && !isParticipating}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleParticipation(post._id);
+                        }}
+                      >
+                        {isParticipating
+                          ? "Annulla partecipazione"
+                          : isFull
+                          ? "Completo"
+                          : "Partecipa"}
+                      </Button>
+                    )}
+                    {!isAuthor && (
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(
+                            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                              post.location?.address
+                            )}`,
+                            "_blank"
+                          );
+                        }}
+                      >
+                        Maps
+                      </Button>
+                    )}
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })}
       </Row>
 
-      <div className="d-flex justify-content-center mt-4">
-        {renderPagination()}
-      </div>
+      {totalPages > 1 && (
+        <Pagination className="justify-content-center mt-4">
+          {[...Array(totalPages)].map((_, idx) => (
+            <Pagination.Item
+              key={idx + 1}
+              active={page === idx + 1}
+              onClick={() => setPage(idx + 1)}
+            >
+              {idx + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+      )}
     </div>
   );
 };
