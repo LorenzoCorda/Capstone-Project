@@ -3,9 +3,9 @@ import "./FeaturesSectionGuest.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
-import firstPhoto from "../../../public/DM.jpg";
+/* import firstPhoto from "../../../public/DM.jpg";
 import secondPhoto from "../../../public/Me.jpg";
-import thirdPhoto from "../../../public/Dirty.jpg";
+import thirdPhoto from "../../../public/Dirty.jpg"; */
 
 const FeaturesSectionGuest = () => {
   useEffect(() => {
@@ -24,7 +24,7 @@ const FeaturesSectionGuest = () => {
         <Row className="g-4">
           <Col md={4} data-aos="zoom-in" data-aos-delay="150">
             <div className="custom-box text-center px-3">
-              <img className="rounded w-100 mb-3 " src={firstPhoto} alt="" />
+              <img className="rounded w-100 mb-3 " src="/DM.jpg" alt="" />
               <h3 className="fw-bold">Allenati con altri dancer</h3>
               <p className="custom-content">
                 Condividi passione e fatica, qui trovi persone con la tua stessa
@@ -34,7 +34,7 @@ const FeaturesSectionGuest = () => {
           </Col>
           <Col md={4} data-aos="zoom-in" data-aos-delay="300">
             <div className="custom-box text-center px-3">
-              <img className="rounded w-100 mb-3 " src={secondPhoto} alt="" />
+              <img className="rounded w-100 mb-3 " src="/Me.jpg" alt="" />
 
               <h3 className="fw-bold">Crea connessioni</h3>
               <p className=" custom-content">
@@ -45,7 +45,7 @@ const FeaturesSectionGuest = () => {
           </Col>
           <Col md={4} data-aos="zoom-in" data-aos-delay="450">
             <div className="custom-box text-center px-3">
-              <img className="rounded w-100 mb-3 " src={thirdPhoto} alt="" />
+              <img className="rounded w-100 mb-3 " src="/Dirty.jpg" alt="" />
 
               <h3 className="fw-bold">Cresci come ballerino</h3>
               <p className="custom-content">

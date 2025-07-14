@@ -3,7 +3,6 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./InfoSectionGuest.css";
-import freezeE from "../../../public/ElbowFreeze.jpg";
 
 const InfoSectionGuest = () => {
   useEffect(() => {
@@ -40,7 +39,7 @@ const InfoSectionGuest = () => {
           data-aos-delay="160"
         >
           <img
-            src={freezeE}
+            src="/ElbowFreeze.JPG"
             alt="Ballerino sorridente"
             className="custom-img"
           />
