@@ -13,7 +13,7 @@ const HeroSectionGuest = () => {
     <>
       <div className="hero-section position-relative text-light overflow-hidden">
         <img
-          src="/img/BboyPositionFreeze.JPG"
+          src="/public/BboyPositionFreeze.JPG"
           alt="Hero"
           className="hero-img"
         />
