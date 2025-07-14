@@ -39,7 +39,7 @@ const InfoSectionGuest = () => {
           data-aos-delay="160"
         >
           <img
-            src="/ElbowFreeze.JPG"
+            src="/images/ElbowFreeze.JPG"
             alt="Ballerino sorridente"
             className="custom-img"
           />

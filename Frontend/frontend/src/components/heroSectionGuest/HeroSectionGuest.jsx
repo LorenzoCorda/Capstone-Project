@@ -12,7 +12,11 @@ const HeroSectionGuest = () => {
   return (
     <>
       <div className="hero-section position-relative text-light overflow-hidden">
-        <img src="/BboyPositionFreeze.JPG" alt="Hero" className="hero-img" />
+        <img
+          src="/images/BboyPositionFreeze.JPG"
+          alt="Hero"
+          className="hero-img"
+        />
 
         <div className="custom-title text-center">
           <h1 className="display-2 fw-bold">BreakMeet</h1>
