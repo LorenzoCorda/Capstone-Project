@@ -1,6 +1,8 @@
 const TrainingPost = require("../models/trainingPost.model");
+const Participation = require("../models/participation.model");
 
 // prenti tutti i post
+
 const getAllTrainingPostService = async (
   search = "",
   city = "",
@@ -36,9 +38,21 @@ const getAllTrainingPostService = async (
   const sortOrder = sort === "asc" ? 1 : -1;
 
   const posts = await TrainingPost.find(query)
+    .populate("author", "_id")
     .limit(pageSize)
     .skip((page - 1) * pageSize)
     .sort({ createdAt: sortOrder });
+
+  // ➕ Aggiunta: conta partecipazioni per ciascun post
+  const postsWithCounts = await Promise.all(
+    posts.map(async (post) => {
+      const count = await Participation.countDocuments({ postId: post._id });
+      return {
+        ...post.toObject(),
+        currentParticipantsCount: count,
+      };
+    })
+  );
 
   const totalPosts = await TrainingPost.countDocuments(query);
   const totalPages = Math.ceil(totalPosts / pageSize);
@@ -48,7 +62,7 @@ const getAllTrainingPostService = async (
     pageSize,
     totalPosts,
     totalPages,
-    posts,
+    posts: postsWithCounts,
   };
 };
 
@@ -69,10 +83,11 @@ const getMyTrainingPostsService = async (userId) => {
 };
 
 //crei un post
-const createTrainingPostService = async (body, userId) => {
+const createTrainingPostService = async (body, userId, imageUrl) => {
   const newPost = new TrainingPost({
     ...body,
     author: userId,
+    image: imageUrl || undefined,
   });
 
   return await newPost.save();

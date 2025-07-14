@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { message } = require("../validators/updateUserValidator");
 
 const TrainingPostSchema = new mongoose.Schema({
   author: {
@@ -17,11 +18,11 @@ const TrainingPostSchema = new mongoose.Schema({
   description: {
     type: String,
     minlength: 5,
-    maxlength: 100,
+    maxlength: 600,
   },
   location: {
     address: { type: String },
-    city: { type: String, required: true },
+    /*  city: { type: String, required: true }, */
     coordinates: {
       lat: { type: Number },
       lng: { type: Number },

@@ -11,7 +11,8 @@ const {
   updateTrainingPostController,
   deleteTrainingPostController,
 } = require("../controller/trainingPost.controller");
-/* const { uploadPostImage } = require("../utils/multer"); */
+const { uploadPostImage } = require("../utils/multer");
+const { validateUpdatePost } = require("../validators/trainingPostValidator");
 
 //AllPosts
 router.get("/", /* validateRequest, */ getAllTrainingPostController);
@@ -25,7 +26,7 @@ router.get("/:id", getTrainingPostByIdController);
 router.post(
   "/",
   authenticateToken,
-  /* uploadPostImage.single("image"), */
+  uploadPostImage.single("image"),
   validateRequest,
   createTrainingPostController
 );
@@ -40,7 +41,9 @@ router.post(
 //UpdatePost
 router.put(
   "/:id",
+  uploadPostImage.single("image"),
   authenticateToken,
+  validateUpdatePost,
   validateRequest,
   updateTrainingPostController
 );

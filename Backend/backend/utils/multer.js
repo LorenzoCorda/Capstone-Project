@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 // Upload per immagini post
-/* const postStorage = new CloudinaryStorage({
+const postStorage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "breakmeet_posts",
@@ -22,5 +22,5 @@ const upload = multer({ storage });
     transformation: [{ width: 800, height: 800, crop: "limit" }],
   },
 });
-const uploadPostImage = multer({ storage: postStorage }); */
-module.exports = { /* uploadPostImage */ upload };
+const uploadPostImage = multer({ storage: postStorage });
+module.exports = { uploadPostImage, upload };

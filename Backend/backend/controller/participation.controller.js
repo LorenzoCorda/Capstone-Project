@@ -8,7 +8,7 @@ const {
 // Crea una partecipazione
 const createParticipationController = async (req, res) => {
   try {
-    const userId = req.user._id; // dal token
+    const userId = req.user._id;
     const { postId } = req.body;
 
     if (!postId) {
@@ -23,7 +23,9 @@ const createParticipationController = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Participation created successfully",
-      data: participation,
+      data: {
+        _id: participation.postId, // frontend expects _id = postId
+      },
     });
   } catch (error) {
     res.status(400).json({
@@ -33,15 +35,21 @@ const createParticipationController = async (req, res) => {
   }
 };
 
-//cancellazione partecipazione
+// Cancellazione partecipazione
 const cancelParticipationController = async (req, res) => {
   try {
-    const userId = req.user._id; // preso dal token
+    const userId = req.user._id;
     const postId = req.params.postId;
 
-    const result = await cancelParticipationService(userId, postId);
+    await cancelParticipationService(userId, postId);
 
-    res.status(200).json(result);
+    res.status(200).json({
+      success: true,
+      message: "Participation cancelled successfully",
+      data: {
+        _id: postId,
+      },
+    });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -69,7 +77,7 @@ const getParticipantsByPostIdController = async (req, res) => {
   }
 };
 
-// Visualizza partecipazioni a piu posts
+// Visualizza partecipazioni a più posts
 const getUserParticipationsController = async (req, res) => {
   try {
     const userId = req.user._id;
