@@ -6,7 +6,7 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
-import { Info, Mail, PlayCircle, Flame } from "lucide-react";
+import { Info, Flame } from "lucide-react";
 import "../guestNavigation/NavigationGuest.css";
 
 const NavigationGuest = () => {
@@ -24,7 +24,7 @@ const NavigationGuest = () => {
   );
 
   return (
-    <Navbar expand="lg" className="bg-white py-3">
+    <Navbar expand="lg" className="bg-white py-3 border">
       <Container fluid className="overflow-hidden">
         <div className="d-none d-lg-flex align-items-center w-100 justify-content-between">
           <div className="custom-div-title d-flex align-items-center gap-3">
@@ -35,7 +35,6 @@ const NavigationGuest = () => {
 
             <Nav className="d-flex flex-row align-items-center gap-3">
               {renderIconLink("/about", <Info size={30} />, "Chi siamo")}
-              {renderIconLink("/contact", <Mail size={30} />, "Contatti")}
             </Nav>
           </div>
         </div>
@@ -72,12 +71,6 @@ const NavigationGuest = () => {
                 <Info size={22} />,
                 "Chi siamo",
                 "Chi siamo"
-              )}
-              {renderIconLink(
-                "/contact",
-                <Mail size={22} />,
-                "Contatti",
-                "Contatti"
               )}
             </Nav>
           </Offcanvas.Body>

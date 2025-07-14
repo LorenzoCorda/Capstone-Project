@@ -33,7 +33,13 @@ const Footer = () => {
           </Col>
           <Col md={4} className="text-center custom-info-title">
             <h4>Contatti</h4>
-            <p className="fs-5">Email: breakmeet.contact@gmail.com</p>
+
+            <a
+              className="text-decoration-none fs-5"
+              href="mailto:breakmeet.contact@gmail.com"
+            >
+              breakmeet.contact@gmail.com
+            </a>
           </Col>
         </Row>
         <hr className="bg-light" />

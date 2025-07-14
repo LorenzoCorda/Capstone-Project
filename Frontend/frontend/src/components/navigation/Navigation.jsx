@@ -13,8 +13,8 @@ const Navigation = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user"); // cancella il token
-    navigate("/"); // oppure "/login"
+    localStorage.removeItem("user");
+    navigate("/");
   };
   /*  const renderIconLink = (href, icon, tooltipText, label) => (
     <OverlayTrigger
@@ -35,10 +35,10 @@ const Navigation = () => {
         <Container fluid>
           <Navbar.Brand
             onClick={handleLogout}
-            className="d-flex align-items-center fs-1 mb-0"
+            className="d-flex align-items-center fs-1"
             href="#"
           >
-            <Flame size={34} className="me-2 text-primary" />
+            <Flame size={32} className="me-2 mb-1 text-primary" />
             BreakMeet
           </Navbar.Brand>
 

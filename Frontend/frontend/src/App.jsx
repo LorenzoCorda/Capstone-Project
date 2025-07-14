@@ -16,6 +16,8 @@ import AllPosts from "../pages/dashboard/AllPosts";
 import AllDancers from "../pages/dashboard/AllDancers";
 import PostDetails from "../pages/dashboard/PostDetails";
 import DancerDetails from "../pages/dashboard/DancerDetails";
+import AboutPage from "../pages/AboutUs";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const App = () => {
   return (
@@ -26,6 +28,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<GuestHomePage />} />
+          <Route path="/about" element={<AboutPage />} />
 
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -49,6 +52,7 @@ const App = () => {
             <Route path="posts/:id" element={<PostDetails />} />
             <Route path="dancers/:id" element={<DancerDetails />} />
           </Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </LoadScript>
