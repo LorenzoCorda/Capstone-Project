@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import "./HeroSectionGuest.css";
-/* import bgImage from "../../../img/BboyPositionFreeze.JPG"; */
+import bgImage from "../../../public/BboyPositionFreeze.jpg";
 import SignUpModal from "../modals/SignupModal";
 import LoginModal from "../modals/LoginModal";
 
@@ -12,11 +12,7 @@ const HeroSectionGuest = () => {
   return (
     <>
       <div className="hero-section position-relative text-light overflow-hidden">
-        <img
-          src="/public/BboyPositionFreeze.JPG"
-          alt="Hero"
-          className="hero-img"
-        />
+        <img src={bgImage} alt="Hero" className="hero-img" />
 
         <div className="custom-title text-center">
           <h1 className="display-2 fw-bold">BreakMeet</h1>
