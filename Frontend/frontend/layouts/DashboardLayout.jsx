@@ -58,7 +58,7 @@ const DashboardLayout = () => {
 
       <div className="dashboard-layout d-flex" style={{ minHeight: "100vh" }}>
         <div className="sidebar d-flex flex-column align-items-center p-1">
-          <Nav className="flex-column gap-3 align-items-center w-100">
+          <Nav className="flex-column gap-3 align-items-center">
             {menuItems.map((item) => (
               <OverlayTrigger
                 key={item.to}
