@@ -42,7 +42,47 @@ const ParticipatedPosts = () => {
     <div>
       <h3 className="mb-4">Allenamenti a cui partecipi</h3>
       <Row>
-        {posts.map((post) => (
+        {posts
+          .filter((post) => post) // scarta eventuali elementi null
+          .map((post) => (
+            <Col key={post._id} xs={12} md={6} lg={3} className="mb-4">
+              <Card className="shadow-sm h-100">
+                {post.image && (
+                  <Card.Img
+                    variant="top"
+                    src={post.image}
+                    style={{
+                      height: "200px",
+                      objectFit: "cover",
+                      borderTopLeftRadius: "0.375rem",
+                      borderTopRightRadius: "0.375rem",
+                    }}
+                  />
+                )}
+                <Card.Body>
+                  <Card.Title>{post.title}</Card.Title>
+                  <p>
+                    <strong>Indirizzo:</strong> {post.location?.address}
+                  </p>
+                  <p>
+                    <strong>Data:</strong>{" "}
+                    {new Date(post.date).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Max partecipanti:</strong> {post.maxParticipants}
+                  </p>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => navigate(`/dashboard/posts/${post._id}`)}
+                  >
+                    Dettagli
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        {/*   {posts.map((post) => (
           <Col key={post._id} xs={12} md={6} lg={3} className="mb-4">
             <Card className="shadow-sm h-100">
               {post.image && (
@@ -78,7 +118,7 @@ const ParticipatedPosts = () => {
               </Card.Body>
             </Card>
           </Col>
-        ))}
+        ))} */}
       </Row>
     </div>
   );

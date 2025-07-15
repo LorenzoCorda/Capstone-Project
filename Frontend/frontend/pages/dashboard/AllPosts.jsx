@@ -19,14 +19,32 @@ const AllPosts = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    const updatePageSize = () => {
+      const width = window.innerWidth;
+      if (width < 992) {
+        setPageSize(2);
+      } else {
+        setPageSize(6);
+      }
+    };
+
+    updatePageSize();
+    window.addEventListener("resize", updatePageSize);
+    return () => window.removeEventListener("resize", updatePageSize);
+  }, []);
+
   const fetchPosts = async () => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/posts?page=${page}&pageSize=6`
+        `${
+          import.meta.env.VITE_SERVER_URL
+        }/posts?page=${page}&pageSize=${pageSize}`
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
@@ -76,13 +94,13 @@ const AllPosts = () => {
       fetchMyParticipations(),
       fetchCurrentUser(),
     ]).finally(() => setLoading(false));
-  }, [page]);
+  }, [page, pageSize]);
 
   const handleParticipation = async (postId) => {
     try {
       const isParticipating = participatedPostIds.has(postId);
 
-      const url = `${import.meta.env.VITE_SERVER_URL}/participations${
+      const url = `${import.meta.env.VITE_SERVER_URL}/participations$${
         isParticipating ? `/${postId}` : ""
       }`;
 
@@ -110,9 +128,9 @@ const AllPosts = () => {
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
-    <div>
+    <div className="container-fluid px-2">
       <h3 className="mb-4">Tutti gli allenamenti</h3>
-      <Row>
+      <Row className="g-3">
         {posts.map((post) => {
           const isAuthor = post.author?._id === currentUser?._id;
           const isParticipating = participatedPostIds.has(post._id);
@@ -121,7 +139,7 @@ const AllPosts = () => {
             post.currentParticipantsCount >= post.maxParticipants;
 
           return (
-            <Col key={post._id} xs={12} md={6} lg={4} className="mb-4">
+            <Col key={post._id} xs={12} sm={6} md={6} lg={4} xl={4}>
               <Card
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate(`/dashboard/posts/${post._id}`)}
@@ -132,12 +150,12 @@ const AllPosts = () => {
                     variant="top"
                     src={post.image}
                     style={{
+                      width: "100%",
                       height: "200px",
                       objectFit: "cover",
                     }}
                   />
                 )}
-
                 <Card.Body>
                   <Card.Title>
                     {post.title}{" "}
@@ -147,11 +165,9 @@ const AllPosts = () => {
                       </Badge>
                     )}
                   </Card.Title>
-
                   <p>
                     <strong>Indirizzo:</strong> {post.location?.address}
                   </p>
-
                   <p>
                     <strong>Data:</strong>{" "}
                     {new Date(post.date).toLocaleString()}
