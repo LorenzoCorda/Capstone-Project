@@ -139,16 +139,6 @@ const updateTrainingPostController = async (req, res) => {
         address: req.body.address,
       },
     };
-    /*  const updateData = {
-      ...req.body,
-    };
-
-    if (req.body.address) {
-      updateData.location = {
-        ...(req.body.city ? { city: req.body.city } : {}),
-        address: req.body.address,
-      };
-    } */
 
     if (req.file && req.file.path) {
       updateData.image = req.file.path;

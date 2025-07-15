@@ -49,10 +49,10 @@ const getParticipantsByPostIdService = async (postId) => {
 // Visualizza partecipazioni dell'utente autenticato
 const getUserParticipationsService = async (userId) => {
   const participations = await Participation.find({ userId })
-    .populate("postId") // popola i dati del post
+    .populate("postId")
     .sort({ joinedAt: -1 });
 
-  return participations.map((p) => p.postId);
+  return participations.map((p) => p.postId).filter((post) => post !== null); // 💥 fix
 };
 
 module.exports = {
