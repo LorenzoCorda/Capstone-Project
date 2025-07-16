@@ -17,7 +17,6 @@ import "../layouts/DashboardLayout.css";
 const menuItems = [
   { to: "/dashboard", label: "Dashboard", icon: <Home size={24} /> },
   { to: "/dashboard/profile", label: "Profilo", icon: <User size={24} /> },
-
   {
     to: "/dashboard/new-post",
     label: "Nuovo post",
@@ -48,7 +47,6 @@ const DashboardLayout = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     navigate("/");
   };
 
@@ -57,7 +55,16 @@ const DashboardLayout = () => {
       <Navigation />
 
       <div className="dashboard-layout d-flex" style={{ minHeight: "100vh" }}>
-        <div className="sidebar d-flex flex-column align-items-center p-1">
+        <div
+          className="sidebar d-flex flex-column align-items-center p-1"
+          style={{
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            zIndex: 1000,
+            backgroundColor: "#fff",
+          }}
+        >
           <Nav className="flex-column gap-3 align-items-center">
             {menuItems.map((item) => (
               <OverlayTrigger

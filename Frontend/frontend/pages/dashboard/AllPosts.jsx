@@ -1,4 +1,4 @@
-import { useEffect, useState, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
   Card,
   Button,
@@ -9,34 +9,28 @@ import {
   Pagination,
   Badge,
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
   const [participatedPostIds, setParticipatedPostIds] = useState(new Set());
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(null);
-  const navigate = useNavigate();
+  const [pageSize] = useState(4); // sempre 5 post per pagina
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+  const [page, setPage] = useState(initialPage);
+
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  useLayoutEffect(() => {
-    const width = window.innerWidth;
-    setPageSize(width < 992 ? 1 : 4);
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setPageSize(width < 992 ? 1 : 4);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const changePage = (newPage) => {
+    setPage(newPage);
+    setSearchParams({ page: newPage });
+  };
 
   const fetchPosts = async () => {
     try {
@@ -87,14 +81,13 @@ const AllPosts = () => {
   };
 
   useEffect(() => {
-    if (!pageSize) return;
     setLoading(true);
     Promise.all([
       fetchPosts(),
       fetchMyParticipations(),
       fetchCurrentUser(),
     ]).finally(() => setLoading(false));
-  }, [page, pageSize]);
+  }, [page]);
 
   const handleParticipation = async (postId) => {
     try {
@@ -124,8 +117,7 @@ const AllPosts = () => {
     }
   };
 
-  if (pageSize === null || loading || !currentUser)
-    return <Spinner animation="border" />;
+  if (loading || !currentUser) return <Spinner animation="border" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
@@ -240,12 +232,12 @@ const AllPosts = () => {
 
         {totalPages > 1 && (
           <div style={{ width: "100%" }}>
-            <Pagination className="justify-content-start mt-4 flex-wrap">
+            <Pagination className="justify-content-center mt-4 flex-wrap">
               {[...Array(totalPages)].map((_, idx) => (
                 <Pagination.Item
                   key={idx + 1}
                   active={page === idx + 1}
-                  onClick={() => setPage(idx + 1)}
+                  onClick={() => changePage(idx + 1)}
                 >
                   {idx + 1}
                 </Pagination.Item>
@@ -260,7 +252,7 @@ const AllPosts = () => {
 
 export default AllPosts;
 
-/* import { useEffect, useState, useLayoutEffect } from "react";
+/* import { useEffect, useState } from "react";
 import {
   Card,
   Button,
@@ -281,24 +273,10 @@ const AllPosts = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(null);
+  const pageSize = 4;
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-
-  useLayoutEffect(() => {
-    const width = window.innerWidth;
-    setPageSize(width < 992 ? 1 : 4);
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setPageSize(width < 992 ? 1 : 4);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const fetchPosts = async () => {
     try {
@@ -349,20 +327,19 @@ const AllPosts = () => {
   };
 
   useEffect(() => {
-    if (!pageSize) return;
     setLoading(true);
     Promise.all([
       fetchPosts(),
       fetchMyParticipations(),
       fetchCurrentUser(),
     ]).finally(() => setLoading(false));
-  }, [page, pageSize]);
+  }, [page]);
 
   const handleParticipation = async (postId) => {
     try {
       const isParticipating = participatedPostIds.has(postId);
 
-      const url = `${import.meta.env.VITE_SERVER_URL}/participations${
+      const url = `${import.meta.env.VITE_SERVER_URL}/participations$${
         isParticipating ? `/${postId}` : ""
       }`;
 
@@ -386,7 +363,7 @@ const AllPosts = () => {
     }
   };
 
-  if (pageSize === null || loading) return <Spinner animation="border" />;
+  if (loading || !currentUser) return <Spinner animation="border" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
@@ -395,11 +372,7 @@ const AllPosts = () => {
         <h3 className="mb-4">Tutti gli allenamenti</h3>
         <Row className="g-3">
           {posts.map((post) => {
-            const isAuthor =
-              !!currentUser?._id &&
-              !!post.author?._id &&
-              post.author._id === currentUser._id;
-         
+            const isAuthor = post.author && post.author._id === currentUser._id;
             const isParticipating = participatedPostIds.has(post._id);
             const isFull =
               post.maxParticipants !== undefined &&
@@ -422,7 +395,6 @@ const AllPosts = () => {
                     maxWidth: "100%",
                     overflowX: "hidden",
                   }}
-                 
                   onClick={() => navigate(`/dashboard/posts/${post._id}`)}
                 >
                   {post.image && (
@@ -473,7 +445,7 @@ const AllPosts = () => {
                           }}
                         >
                           {isParticipating
-                            ? "Annulla partecipazione"
+                            ? "Annulla"
                             : isFull
                             ? "Completo"
                             : "Partecipa"}
@@ -506,7 +478,7 @@ const AllPosts = () => {
 
         {totalPages > 1 && (
           <div style={{ width: "100%" }}>
-            <Pagination className="justify-content-start mt-4 flex-wrap">
+            <Pagination className="justify-content-center mt-4 flex-wrap">
               {[...Array(totalPages)].map((_, idx) => (
                 <Pagination.Item
                   key={idx + 1}
