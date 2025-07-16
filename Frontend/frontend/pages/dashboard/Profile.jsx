@@ -63,11 +63,11 @@ const Profile = () => {
           <img
             src={getValidImage(user.profileImage)}
             alt="Profile"
-            className="rounded-circle custom-img-profile ms-3 mt-3 me-4"
+            className="rounded-circle custom-img-profile "
           />
           <div>
-            <h4 className="mb-1">{user.name}</h4>
-            <p className="text-muted mb-0">@{user.username}</p>
+            <h4 className="mb-1 ms-2">{user.name}</h4>
+            <p className="text-muted ms-2">@{user.username}</p>
           </div>
         </div>
 

@@ -108,7 +108,34 @@ const ParticipatedPosts = () => {
                     }}
                   />
                 )}
+
                 <Card.Body>
+                  <div className="d-flex align-items-center mb-2">
+                    <img
+                      src={
+                        post.author?.profileImage ||
+                        "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png"
+                      }
+                      alt="profile"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                        marginRight: "10px",
+                      }}
+                    />
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/dashboard/dancers/${post.author?._id}`);
+                      }}
+                      style={{ cursor: "pointer", color: "#007bff" }}
+                    >
+                      @{post.author?.username}
+                    </span>
+                  </div>
+
                   <Card.Title>{post.title}</Card.Title>
                   <p>
                     <strong>Indirizzo:</strong> {post.location?.address}
@@ -148,6 +175,46 @@ const ParticipatedPosts = () => {
                     </Button>
                   </div>
                 </Card.Body>
+                {/*  <Card.Body>
+                  <Card.Title>{post.title}</Card.Title>
+                  <p>
+                    <strong>Indirizzo:</strong> {post.location?.address}
+                  </p>
+                  <p>
+                    <strong>Data:</strong>{" "}
+                    {new Date(post.date).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Max partecipanti:</strong> {post.maxParticipants}
+                  </p>
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUnparticipate(post._id);
+                      }}
+                    >
+                      Annulla
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(
+                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            post.location?.address
+                          )}`,
+                          "_blank"
+                        );
+                      }}
+                    >
+                      Maps
+                    </Button>
+                  </div>
+                </Card.Body> */}
               </Card>
             </Col>
           ))}

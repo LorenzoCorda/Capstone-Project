@@ -100,7 +100,7 @@ const DashboardHome = () => {
 
   return (
     <div className="p-4">
-      <h2 className="mb-4">Benvenuto nella tua Dashboard</h2>
+      <h2 className="mb-4 text-center">Benvenuto nella tua Dashboard</h2>
 
       {/* POPUP per bio/città mancante */}
       <Modal show={showPrompt} onHide={() => setShowPrompt(false)} centered>

@@ -100,7 +100,7 @@ const AllPosts = () => {
     try {
       const isParticipating = participatedPostIds.has(postId);
 
-      const url = `${import.meta.env.VITE_SERVER_URL}/participations$${
+      const url = `${import.meta.env.VITE_SERVER_URL}/participations${
         isParticipating ? `/${postId}` : ""
       }`;
 
@@ -169,7 +169,36 @@ const AllPosts = () => {
                       }}
                     />
                   )}
+
                   <Card.Body>
+                    <div className="d-flex align-items-center mb-2">
+                      {post.author?.profileImage && (
+                        <img
+                          src={post.author.profileImage}
+                          alt="Foto profilo"
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            marginRight: "8px",
+                          }}
+                        />
+                      )}
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/dashboard/dancers/${post.author._id}`);
+                        }}
+                        style={{
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          color: "#007bff",
+                        }}
+                      >
+                        @{post.author?.username}
+                      </span>
+                    </div>
                     <Card.Title>
                       {post.title}{" "}
                       {isAuthor && (
@@ -178,6 +207,7 @@ const AllPosts = () => {
                         </Badge>
                       )}
                     </Card.Title>
+
                     <p>
                       <strong>Indirizzo:</strong> {post.location?.address}
                     </p>
