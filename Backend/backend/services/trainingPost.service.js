@@ -38,7 +38,7 @@ const getAllTrainingPostService = async (
   const sortOrder = sort === "asc" ? 1 : -1;
 
   const posts = await TrainingPost.find(query)
-    .populate("author", "_id")
+    .populate("author", "_id username profileImage")
     .limit(pageSize)
     .skip((page - 1) * pageSize)
     .sort({ createdAt: sortOrder });
