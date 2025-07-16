@@ -103,7 +103,7 @@ const Profile = () => {
             style={{ maxWidth: "200px" }}
             onClick={() => setShowDeleteConfirm(true)}
           >
-            Elimina profilo
+            Elimina
           </Button>
         </div>
       </Card>

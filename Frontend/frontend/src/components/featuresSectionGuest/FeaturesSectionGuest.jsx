@@ -46,7 +46,7 @@ const FeaturesSectionGuest = () => {
 
               <h3 className="fw-bold">Crea connessioni</h3>
               <p className=" custom-content">
-                Conosci altri breaker, entra in contatto con ballerini della tua
+                Conosci altri B-boy, entra in contatto con ballerini della tua
                 città.
               </p>
             </div>

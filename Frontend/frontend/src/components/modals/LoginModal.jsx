@@ -26,6 +26,45 @@ const LoginModal = ({ show, handleClose }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Email o password sbagliate. Riprova.");
+      }
+      if (!data.user) {
+        throw new Error("Utente non trovato. Registrati prima di accedere.");
+      }
+
+      if (!data.user.isVerified) {
+        throw new Error("Devi prima verificare la tua email.");
+      }
+
+      const { token, user } = data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      handleModalClose();
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Errore durante il login");
+      setPassword("");
+    } finally {
+      setLoading(false);
+    }
+  };
+  /*  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
     setError("");
 
@@ -46,6 +85,10 @@ const LoginModal = ({ show, handleClose }) => {
             "Email o password sbagliate"
         );
       }
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Errore durante il login");
+      }
 
       const { token, user } = data;
 
@@ -61,7 +104,7 @@ const LoginModal = ({ show, handleClose }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }; */
 
   return (
     <Modal show={show} onHide={handleModalClose} centered>
