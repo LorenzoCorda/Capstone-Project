@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendVerificationEmail = async (to, token) => {
-  const link = `http://localhost:9099/auth/verify-email?token=${token}`;
+  const link = `${process.env.SERVER_BASE_URL}/auth/verify-email?token=${token}`;
   await transporter.sendMail({
     from: `"BreakMeet" <${process.env.EMAIL_USER}>`,
     to,
