@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LoadScript } from "@react-google-maps/api"; // ✅ IMPORTA
+/* import { LoadScript } from "@react-google-maps/api"; // ✅ IMPORTA */
 
 import GuestHomePage from "../pages/GuestHomePage";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -21,41 +21,41 @@ import NotFoundPage from "../pages/NotFoundPage";
 
 const App = () => {
   return (
-    <LoadScript
+    /*  <LoadScript
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} // ✅ Assicurati che sia nel .env
       libraries={["places"]} // ✅ Carica la libreria necessaria
-    >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<GuestHomePage />} />
-          <Route path="/about" element={<AboutPage />} />
+    > */
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<GuestHomePage />} />
+        <Route path="/about" element={<AboutPage />} />
 
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <DashboardLayout />
-              </PrivateRoute>
-            }
-          >
-            <Route index element={<DashboardHome />} />
-            <Route path="new-post" element={<NewPost />} />
-            <Route path="my-posts" element={<MyPosts />} />
-            <Route path="training" element={<AllPosts />} />
-            <Route path="dancers" element={<AllDancers />} />
-            <Route path="participations" element={<Participations />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="posts/:id" element={<PostDetails />} />
-            <Route path="dancers/:id" element={<DancerDetails />} />
-          </Route>
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </BrowserRouter>
-    </LoadScript>
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <DashboardLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="new-post" element={<NewPost />} />
+          <Route path="my-posts" element={<MyPosts />} />
+          <Route path="training" element={<AllPosts />} />
+          <Route path="dancers" element={<AllDancers />} />
+          <Route path="participations" element={<Participations />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="posts/:id" element={<PostDetails />} />
+          <Route path="dancers/:id" element={<DancerDetails />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
+    /* </LoadScript> */
   );
 };
 

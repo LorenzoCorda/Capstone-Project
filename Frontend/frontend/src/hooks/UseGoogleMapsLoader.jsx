@@ -1,4 +1,18 @@
-import { useEffect, useState } from "react";
+/* import { useEffect, useState } from "react";
+
+export const useGoogleMapsLoader = () => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (window.google && window.google.maps) {
+      setLoaded(true);
+    }
+  }, []);
+
+  return loaded;
+}; */
+
+/* import { useEffect, useState } from "react";
 
 export const useGoogleMapsLoader = () => {
   const [loaded, setLoaded] = useState(false);
@@ -32,4 +46,4 @@ export const useGoogleMapsLoader = () => {
   }, []);
 
   return loaded;
-};
+}; */

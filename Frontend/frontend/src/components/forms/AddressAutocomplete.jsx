@@ -1,46 +1,66 @@
-import { useRef, useEffect } from "react";
+/* import { useState, useEffect } from "react";
+import { createElement, PlaceAutocompleteElement } from "@googlemaps/places";
 
-const AddressAutocomplete = ({ value, onChange, onSelect, mapsLoaded }) => {
-  const inputRef = useRef(null);
+export default function IndirizzoInput({ value, onChange }) {
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!mapsLoaded || !inputRef.current) return;
-
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      {
-        types: ["address"],
-        componentRestrictions: { country: "it" },
-      }
-    );
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (!place || !place.formatted_address) return;
-
-      const address = place.formatted_address;
-      const cityComponent = place.address_components?.find((comp) =>
-        comp.types.includes("locality")
-      );
-      const city = cityComponent?.long_name || "";
-      onSelect(address, city);
+    createElement({
+      key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     });
-
-    return () => {
-      window.google.maps.event.clearInstanceListeners(autocomplete);
-    };
-  }, [mapsLoaded]);
+    setLoaded(true);
+  }, []);
 
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      className="form-control"
-      placeholder="Inserisci indirizzo..."
-      value={value}
-      onChange={onChange}
-    />
+    loaded && (
+      <PlaceAutocompleteElement
+        placeholder="Inserisci un indirizzo"
+        style={{
+          width: "100%",
+          height: "48px",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          padding: "10px",
+        }}
+        value={value}
+        onInput={(e) => onChange(e.target.value)}
+        onPlaceChange={(e) => onChange(e.target.value)}
+      />
+    )
+  );
+} */
+
+/* import { Autocomplete } from "@react-google-maps/api";
+import { useRef } from "react";
+
+const AddressAutocomplete = ({ value, onChange, onSelect }) => {
+  const autocompleteRef = useRef(null);
+
+  const handleLoad = (autocomplete) => {
+    autocompleteRef.current = autocomplete;
+  };
+
+  const handlePlaceChanged = () => {
+    const place = autocompleteRef.current.getPlace();
+    const address = place.formatted_address;
+    const city = place.address_components?.find((comp) =>
+      comp.types.includes("locality")
+    )?.long_name;
+
+    if (onSelect) onSelect(address, city);
+  };
+
+  return (
+    <Autocomplete onLoad={handleLoad} onPlaceChanged={handlePlaceChanged}>
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Inserisci indirizzo"
+        value={value}
+        onChange={onChange}
+      />
+    </Autocomplete>
   );
 };
 
-export default AddressAutocomplete;
+export default AddressAutocomplete; */
