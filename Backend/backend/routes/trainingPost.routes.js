@@ -30,13 +30,6 @@ router.post(
   validateRequest,
   createTrainingPostController
 );
-/* router.post(
-  "/",
-  uploadPostImage.single("image"),
-  authenticateToken,
-  validateRequest,
-  createTrainingPostController
-); */
 
 //UpdatePost
 router.put(

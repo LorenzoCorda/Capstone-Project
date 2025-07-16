@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  password: { type: String, required: true }, // hashed
+  password: { type: String, required: true },
   bio: {
     type: String,
     maxlength: 200,
@@ -46,14 +46,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  /* location: {
-    city: String,
-    region: String,
-    country: String,
-  }, */
+
   styles: [String],
   joinedAt: { type: Date, default: Date.now },
-  //password dimenticata
+  /* password dimenticata */
   resetPasswordToken: String,
   resetPasswordExpires: Date,
 });

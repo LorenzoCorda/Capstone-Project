@@ -5,7 +5,7 @@ const signupController = async (req, res) => {
     const user = await signupService(req.body);
     res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message: "Utente registrato con successo",
       data: user,
     });
   } catch (error) {
@@ -22,7 +22,7 @@ const loginController = async (req, res) => {
     const { user, token } = await loginService(email, password);
     res.status(200).json({
       success: true,
-      message: "Login successful",
+      message: "Accesso riuscito",
       token,
       user,
     });

@@ -5,7 +5,7 @@ const cloudinary = require("./cloudinary");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "breakmeet_profiles", // puoi cambiare nome se vuoi
+    folder: "breakmeet_profiles",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
     transformation: [{ width: 500, height: 500, crop: "limit" }],
   },

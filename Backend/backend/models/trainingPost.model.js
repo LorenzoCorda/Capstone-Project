@@ -22,7 +22,7 @@ const TrainingPostSchema = new mongoose.Schema({
   },
   location: {
     address: { type: String },
-    /*  city: { type: String, required: true }, */
+
     coordinates: {
       lat: { type: Number },
       lng: { type: Number },

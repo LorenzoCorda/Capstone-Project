@@ -14,7 +14,6 @@ router.post("/register", upload.single("profileImage"), async (req, res) => {
   try {
     const imagePath = req.file?.path;
 
-    // Validazione dei dati
     const { error } = registerSchema.validate(req.body);
     if (error) {
       const field = error.details[0].context.key;
@@ -23,7 +22,6 @@ router.post("/register", upload.single("profileImage"), async (req, res) => {
         .json({ error: { [field]: error.details[0].message } });
     }
 
-    // ✅ Passaggio corretto dell'immagine
     const savedUser = await signupService(req.body, imagePath);
 
     res.status(201).json({
@@ -31,9 +29,8 @@ router.post("/register", upload.single("profileImage"), async (req, res) => {
       user: savedUser,
     });
   } catch (error) {
-    // Gestione errori MongoDB per chiave duplicata
     if (error.code === 11000) {
-      const duplicateField = Object.keys(error.keyValue)[0]; // "username" o "email"
+      const duplicateField = Object.keys(error.keyValue)[0];
       return res.status(400).json({
         error: { [duplicateField]: `${duplicateField} già in uso` },
       });
@@ -42,35 +39,6 @@ router.post("/register", upload.single("profileImage"), async (req, res) => {
     res.status(400).json({ error: { general: error.message } });
   }
 });
-/* router.post("/register", upload.single("profileImage"), async (req, res) => {
-  try {
-    const profileImage = req.file?.path;
-
-    const { error } = registerSchema.validate(req.body);
-    if (error) {
-      const field = error.details[0].context.key;
-      return res
-        .status(400)
-        .json({ error: { [field]: error.details[0].message } });
-    }
-
-    const savedUser = await signupService({ ...req.body, profileImage });
-    res
-      .status(201)
-      .json({ message: "Utente registrato con successo", user: savedUser });
-  } catch (error) {
-    // Gestione errori MongoDB per chiave duplicata
-
-    if (error.code === 11000) {
-      const duplicateField = Object.keys(error.keyValue)[0]; // "username" o "email"
-      return res.status(400).json({
-        error: { [duplicateField]: `${duplicateField} già in uso` },
-      });
-    }
-
-    res.status(400).json({ error: { general: error.message } });
-  }
-}); */
 
 // LOGIN
 
@@ -117,10 +85,10 @@ router.post("/request-password-reset", async (req, res) => {
 
   const token = crypto.randomBytes(32).toString("hex");
   user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 3600000; // 1 ora
+  user.resetPasswordExpires = Date.now() + 3600000;
   await user.save();
 
-  await sendPasswordResetEmail(email, token); // ✅ CORRETTO
+  await sendPasswordResetEmail(email, token);
 
   res.json({ message: "Email inviata con istruzioni per il reset" });
 });
@@ -145,43 +113,5 @@ router.post("/reset-password", async (req, res) => {
 
   res.json({ message: "Password aggiornata con successo" });
 });
-
-/* // Richiesta reset password
-
-router.post("/request-password-reset", async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: "Email non trovata" });
-
-  const token = crypto.randomBytes(32).toString("hex");
-  user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 3600000;
-  await user.save();
-
-  await sendPasswordResetEmail(email, token);
-
-  res.json({ message: "Email inviata con istruzioni per il reset" });
-});
-
-
-// Reset password effettivo
-router.post("/reset-password", async (req, res) => {
-  const { token, newPassword } = req.body;
-
-  const user = await User.findOne({
-    resetPasswordToken: token,
-    resetPasswordExpires: { $gt: Date.now() },
-  });
-
-  if (!user)
-    return res.status(400).json({ error: "Token non valido o scaduto" });
-
-  user.password = await bcrypt.hash(newPassword, 10);
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-  await user.save();
-
-  res.json({ message: "Password aggiornata con successo" });
-}); */
 
 module.exports = router;

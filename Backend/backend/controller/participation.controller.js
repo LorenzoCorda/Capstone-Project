@@ -14,7 +14,7 @@ const createParticipationController = async (req, res) => {
     if (!postId) {
       return res.status(400).json({
         success: false,
-        message: "Post ID is required",
+        message: "L'Id del post e richiesto",
       });
     }
 
@@ -22,9 +22,9 @@ const createParticipationController = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Participation created successfully",
+      message: "Partecipazione creata con successo",
       data: {
-        _id: participation.postId, // frontend expects _id = postId
+        _id: participation.postId,
       },
     });
   } catch (error) {
@@ -45,7 +45,7 @@ const cancelParticipationController = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Participation cancelled successfully",
+      message: "Partecipazione annullata con successo",
       data: {
         _id: postId,
       },
@@ -85,7 +85,7 @@ const getUserParticipationsController = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "User participations retrieved",
+      message: "Partecipazioni dell'utente recuperate",
       data: posts,
     });
   } catch (error) {

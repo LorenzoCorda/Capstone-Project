@@ -9,15 +9,11 @@ const registerSchema = Joi.object({
     "string.empty": "Il cognome è obbligatorio",
     "string.min": "Il cognome deve avere almeno 2 caratteri",
   }),
-  username: Joi.string() /* .alphanum() */
-    .min(3)
-    .max(30)
-    .required()
-    .messages({
-      "string.empty": "L'username è obbligatorio",
-      "string.alphanum": "L'username può contenere solo lettere e numeri",
-      "string.min": "L'username deve avere almeno 3 caratteri",
-    }),
+  username: Joi.string().min(3).max(30).required().messages({
+    "string.empty": "L'username è obbligatorio",
+    "string.alphanum": "L'username può contenere solo lettere e numeri",
+    "string.min": "L'username deve avere almeno 3 caratteri",
+  }),
   styles: Joi.string().min(2).required().messages({
     "string.empty": "Lo stile è obbligatorio",
   }),
@@ -32,10 +28,6 @@ const registerSchema = Joi.object({
       "string.pattern.base":
         "La password deve contenere almeno una lettera e un numero",
     }),
-  /*  password: Joi.string().min(6).required().messages({
-    "string.min": "La password deve avere almeno 6 caratteri",
-    "string.empty": "La password è obbligatoria",
-  }), */
 });
 
 const loginSchema = Joi.object({

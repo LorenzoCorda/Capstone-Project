@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-const cloudinary = require("../utils/cloudinary"); // importa da dove lo configuri
+const cloudinary = require("../utils/cloudinary");
 const { sendVerificationEmail } = require("../utils/email");
 
 const signupService = async (userData, imagePath) => {
@@ -26,7 +26,6 @@ const signupService = async (userData, imagePath) => {
     });
     uploadedImageUrl = result.secure_url;
   } else {
-    // immagine di default se non caricata
     uploadedImageUrl =
       "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png";
   }
@@ -44,7 +43,7 @@ const signupService = async (userData, imagePath) => {
 
   const saved = await newUser.save();
 
-  await sendVerificationEmail(saved.email, emailToken); // invia email di conferma
+  await sendVerificationEmail(saved.email, emailToken);
 
   const { password, ...userWithoutPassword } = saved.toObject();
   return userWithoutPassword;
@@ -53,17 +52,13 @@ const signupService = async (userData, imagePath) => {
 const loginService = async (email, password) => {
   const user = await User.findOne({ email });
 
-  // ⛔ BLOCCA utenti non verificati
   if (!user.isVerified) {
     throw new Error("Email non verificata. Controlla la tua casella di posta.");
-  }
-  if (!user) {
-    throw new Error("Email o password sbagliate");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error("Email o password sbagliate");
+    throw new Error("Email o password sbagliate. Riprova.");
   }
 
   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {

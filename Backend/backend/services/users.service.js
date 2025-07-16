@@ -50,11 +50,10 @@ const getAllUsersService = async (
   };
 };
 
-//ottieni user tramite id
 const getUserByIdService = async (id) => {
   const user = await User.findById(id);
   if (!user) {
-    throw new Error("User not found");
+    throw new Error("Utente non trovato");
   }
   return user;
 };
@@ -64,22 +63,20 @@ const getUserByIdService = async (id) => {
 const updateUserService = async (userId, updatePayload) => {
   const options = { new: true, runValidators: true };
 
-  // Verifiche univocità solo se i campi sono presenti
   if (
     updatePayload.username &&
     (await isUsernameTaken(updatePayload.username, userId))
   ) {
-    throw new Error("Username already in use");
+    throw new Error("Username è già in uso");
   }
 
   if (
     updatePayload.email &&
     (await isEmailTaken(updatePayload.email, userId))
   ) {
-    throw new Error("Email already in use");
+    throw new Error("Email è già in uso");
   }
 
-  // Usa direttamente findByIdAndUpdate (supporta sia $set che $unset)
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     updatePayload,
@@ -87,7 +84,7 @@ const updateUserService = async (userId, updatePayload) => {
   );
 
   if (!updatedUser) {
-    throw new Error("User not found or update failed");
+    throw new Error("Utente non trovato o aggiornamento fallito");
   }
 
   return updatedUser;
@@ -96,17 +93,14 @@ const updateUserService = async (userId, updatePayload) => {
 //eliminazione utente
 const deleteUserService = async (userId) => {
   const user = await User.findById(userId);
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error("Utente non trovato");
 
-  // ✅ Elimina immagine profilo se personalizzata
   if (user.profileImage && user.profileImage !== DEFAULT_IMAGE) {
     await deleteImageFromCloudinary(user.profileImage);
   }
 
-  // ✅ Elimina partecipazioni
   await Participation.deleteMany({ userId });
 
-  // ✅ Elimina i post creati dall’utente (e immagini se vuoi)
   const userPosts = await TrainingPost.find({ author: userId });
 
   for (const post of userPosts) {
@@ -117,7 +111,6 @@ const deleteUserService = async (userId) => {
 
   await TrainingPost.deleteMany({ author: userId });
 
-  // ✅ Elimina utente
   await user.deleteOne();
 
   return {

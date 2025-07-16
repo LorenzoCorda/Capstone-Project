@@ -6,14 +6,10 @@ const updateUserSchema = Joi.object({
   email: Joi.string().email(),
   bio: Joi.string().allow(""),
   city: Joi.string().allow(""),
-  /* styles: Joi.array().items(Joi.string()).default([]), */
   styles: Joi.alternatives()
     .messages({ "array.min": "Devi inserire almeno uno stile di danza" })
 
-    .try(
-      Joi.string(), // es. "break dance, hip hop"
-      Joi.array().items(Joi.string()) // es. ["break dance", "hip hop"]
-    )
+    .try(Joi.string(), Joi.array().items(Joi.string()))
     .default([]),
   profileImage: Joi.string().uri().allow(""),
   removeImage: Joi.boolean().truthy("true").falsy("false").default(false),

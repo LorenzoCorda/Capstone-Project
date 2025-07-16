@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const authenticateToken = require("../middlewares/authenticateToken");
-/* const User = require("../models/users.model"); */
 const { upload } = require("../utils/multer");
 
 const {

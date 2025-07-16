@@ -43,7 +43,6 @@ const getAllTrainingPostService = async (
     .skip((page - 1) * pageSize)
     .sort({ createdAt: sortOrder });
 
-  // ➕ Aggiunta: conta partecipazioni per ciascun post
   const postsWithCounts = await Promise.all(
     posts.map(async (post) => {
       const count = await Participation.countDocuments({ postId: post._id });
@@ -70,7 +69,7 @@ const getAllTrainingPostService = async (
 const getTrainingPostByIdService = async (postId) => {
   const post = await TrainingPost.findById(postId);
   if (!post) {
-    throw new Error("Post not found");
+    throw new Error("Post non trovato");
   }
   return post;
 };
@@ -102,7 +101,7 @@ const updateTrainingPostService = async (id, postPayload) => {
     options
   );
   if (!updatedPost) {
-    throw new Error("Post not found or not updated");
+    throw new Error("Post non trovato o non aggiornato");
   }
   return updatedPost;
 };
@@ -112,18 +111,18 @@ const deleteTrainingPostService = async (postId, userId) => {
   const post = await TrainingPost.findById(postId);
 
   if (!post) {
-    throw new Error("Post not found");
+    throw new Error("Post non trovato");
   }
 
   if (post.author.toString() !== userId.toString()) {
-    throw new Error("You don't have permissions to delete this post");
+    throw new Error("Non hai il permesso per eliminare questo post");
   }
 
   await post.deleteOne();
 
   return {
     success: true,
-    message: "Post deleted successfully",
+    message: "Eliminazione del post avvenuta con successo",
   };
 };
 

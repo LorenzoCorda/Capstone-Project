@@ -1,18 +1,16 @@
 const mongoose = require("mongoose");
 
 const errorHandler = (err, req, res, next) => {
-  console.error(err); // per log/debug in console
+  console.error(err);
 
-  // Mongoose ObjectId malformato
   if (err instanceof mongoose.Error.CastError) {
     return res.status(400).json({
       success: false,
-      message: "Invalid ID format",
+      message: "Formato ID non valido",
       data: null,
     });
   }
 
-  // Mongoose validation error
   if (err instanceof mongoose.Error.ValidationError) {
     return res.status(400).json({
       success: false,
@@ -21,7 +19,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Errori con statusCode
   const statusCode = err.statusCode || 500;
 
   return res.status(statusCode).json({

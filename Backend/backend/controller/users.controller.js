@@ -36,7 +36,7 @@ const getAllUsersController = async (request, response) => {
     if (!users || users.length === 0) {
       return response.status(404).send({
         statusCode: 404,
-        message: "Users not found",
+        message: "Utenti non trovati",
       });
     }
 
@@ -46,7 +46,7 @@ const getAllUsersController = async (request, response) => {
       totalUsers,
       users,
       statusCode: 200,
-      message: "Users found successfully",
+      message: "Utenti trovati con successo",
     });
   } catch (error) {
     response.status(500).send({
@@ -87,42 +87,6 @@ const getUserProfileController = async (req, res) => {
 
 // PUT /users/me
 
-/* const updateUserController = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { username, bio, styles, removeImage } = req.body;
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "Utente non trovato" });
-
-    if (username) user.username = username;
-    if (bio !== undefined) user.bio = bio;
-    if (styles && Array.isArray(styles)) user.styles = styles;
-
-    // 🔴 Gestione rimozione immagine
-    if (removeImage === "true" || removeImage === true) {
-      if (user.profileImage && user.profileImage.includes("cloudinary.com")) {
-        // Estrai public_id dall'URL per rimuoverla
-        const publicId = user.profileImage.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`breakmeet/${publicId}`);
-      }
-      user.profileImage = DEFAULT_PROFILE_IMAGE;
-    }
-
-    // 🔵 Se c'è una nuova immagine da multer (file caricato)
-    if (req.file && req.file.path) {
-      user.profileImage = req.file.path;
-    }
-
-    await user.save();
-
-    res.status(200).json(user);
-  } catch (err) {
-    console.error("Errore nel salvataggio del profilo:", err);
-    res.status(500).json({ message: "Errore durante l'aggiornamento profilo" });
-  }
-}; */
-
 const updateUserController = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -134,7 +98,6 @@ const updateUserController = async (req, res) => {
 
     const removeImage = payload.removeImage === "true";
 
-    // Validazione Joi
     const { error, value } = updateUserSchema.validate(payload, {
       abortEarly: false,
     });
@@ -147,7 +110,6 @@ const updateUserController = async (req, res) => {
       return res.status(400).json({ success: false, errors });
     }
 
-    // Campi ammessi per update
     const allowedFields = [
       "name",
       "username",
@@ -162,7 +124,6 @@ const updateUserController = async (req, res) => {
       Object.entries(value).filter(([key]) => allowedFields.includes(key))
     );
 
-    // Verifiche univocità email / username
     if (updates.email && (await isEmailTaken(updates.email, userId))) {
       return res
         .status(400)
@@ -177,7 +138,6 @@ const updateUserController = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    // Se richiesto, elimina immagine precedente e imposta default
     if (
       removeImage &&
       user.profileImage &&
@@ -212,20 +172,10 @@ const deleteUserController = async (req, res) => {
     const result = await deleteUserService(userId);
     res.status(200).json(result);
   } catch (err) {
-    console.error("Errore durante l'eliminazione:", err); // LOG COMPLETO
+    console.error("Errore durante l'eliminazione:", err);
     res.status(500).json({ message: "Errore interno", error: err.message });
   }
 };
-/* const deleteUserController = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const result = await deleteUserService(userId);
-
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(403).json({ error: err.message });
-  }
-}; */
 
 module.exports = {
   getAllUsersController,
