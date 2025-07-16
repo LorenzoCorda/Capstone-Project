@@ -11,6 +11,7 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("✅ Token valido:", decoded);
     req.user = decoded; // 👈 Qui viene impostato req.user
     next();
   } catch (err) {

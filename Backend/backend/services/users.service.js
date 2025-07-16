@@ -1,6 +1,10 @@
 const User = require("../models/users.model");
 
 const TrainingPost = require("../models/trainingPost.model");
+const Participation = require("../models/participation.model");
+const { deleteImageFromCloudinary } = require("../utils/deleteFromCloudinary");
+const DEFAULT_IMAGE =
+  "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png";
 const {
   isUsernameTaken,
   isEmailTaken,
@@ -57,38 +61,6 @@ const getUserByIdService = async (id) => {
 
 //modifica post
 
-/* const updateUserService = async (userId, updatePayload) => {
-  const options = { new: true, runValidators: true };
-
-  // Verifiche univocità
-  if (
-    updatePayload.username &&
-    (await isUsernameTaken(updatePayload.username, userId))
-  ) {
-    throw new Error("Username already in use");
-  }
-
-  if (
-    updatePayload.email &&
-    (await isEmailTaken(updatePayload.email, userId))
-  ) {
-    throw new Error("Email already in use");
-  }
-
-  // Esegui l'aggiornamento, supporta sia $set che $unset
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    updatePayload,
-    options
-  );
-
-  if (!updatedUser) {
-    throw new Error("User not found or update failed");
-  }
-
-  return updatedUser;
-}; */
-
 const updateUserService = async (userId, updatePayload) => {
   const options = { new: true, runValidators: true };
 
@@ -122,21 +94,35 @@ const updateUserService = async (userId, updatePayload) => {
 };
 
 //eliminazione utente
-
 const deleteUserService = async (userId) => {
   const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
 
-  if (!user) {
-    throw new Error("User not found");
+  // ✅ Elimina immagine profilo se personalizzata
+  if (user.profileImage && user.profileImage !== DEFAULT_IMAGE) {
+    await deleteImageFromCloudinary(user.profileImage);
+  }
+
+  // ✅ Elimina partecipazioni
+  await Participation.deleteMany({ userId });
+
+  // ✅ Elimina i post creati dall’utente (e immagini se vuoi)
+  const userPosts = await TrainingPost.find({ author: userId });
+
+  for (const post of userPosts) {
+    if (post.image) {
+      await deleteImageFromCloudinary(post.image);
+    }
   }
 
   await TrainingPost.deleteMany({ author: userId });
 
+  // ✅ Elimina utente
   await user.deleteOne();
 
   return {
     success: true,
-    message: "User and related posts deleted successfully",
+    message: "Utente, post, partecipazioni e immagini eliminati con successo",
   };
 };
 

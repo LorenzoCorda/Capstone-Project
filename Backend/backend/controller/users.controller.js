@@ -210,12 +210,22 @@ const deleteUserController = async (req, res) => {
   try {
     const userId = req.user._id;
     const result = await deleteUserService(userId);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Errore durante l'eliminazione:", err); // LOG COMPLETO
+    res.status(500).json({ message: "Errore interno", error: err.message });
+  }
+};
+/* const deleteUserController = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const result = await deleteUserService(userId);
 
     res.status(200).json(result);
   } catch (err) {
     res.status(403).json({ error: err.message });
   }
-};
+}; */
 
 module.exports = {
   getAllUsersController,
