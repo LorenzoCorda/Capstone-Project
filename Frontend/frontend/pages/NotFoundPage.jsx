@@ -19,13 +19,12 @@ const NotFoundPage = () => {
           Pagina non trovata
         </h2>
         <h3 className=" text-gray-600 mt-3">
-          La pagina che stai cercando non esiste o è stata spostata.
+          La pagina che stai cercando non esiste.
         </h3>
-        <Link
-          to="/"
-          className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition"
-        >
-          Torna alla Home
+        <Link to="/" className=" text-decoration-none">
+          <h5 className="bg-blue-600 mb-5 mt-3 text-primary">
+            Torna alla Home
+          </h5>
         </Link>
       </div>
       <Footer />
