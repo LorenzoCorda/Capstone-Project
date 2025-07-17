@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-/* import { LoadScript } from "@react-google-maps/api"; // ✅ IMPORTA */
 
 import GuestHomePage from "../pages/GuestHomePage";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -21,10 +20,6 @@ import NotFoundPage from "../pages/NotFoundPage";
 
 const App = () => {
   return (
-    /*  <LoadScript
-      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} // ✅ Assicurati che sia nel .env
-      libraries={["places"]} // ✅ Carica la libreria necessaria
-    > */
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<GuestHomePage />} />
@@ -55,7 +50,6 @@ const App = () => {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
-    /* </LoadScript> */
   );
 };
 

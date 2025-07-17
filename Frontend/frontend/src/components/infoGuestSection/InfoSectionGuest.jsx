@@ -7,7 +7,7 @@ import "./InfoSectionGuest.css";
 const InfoSectionGuest = () => {
   useEffect(() => {
     AOS.init({
-      duration: 800, // durata in ms
+      duration: 800,
       offset: 250,
     });
   }, []);
@@ -26,8 +26,8 @@ const InfoSectionGuest = () => {
             Perché BreakMeet?
           </h1>
           <p className="fs-2 text-white mb-4">
-            BreakMeet nasce per aiutare ballerini e ballerine di street dance a
-            trovare compagni di allenamento ovunque si trovino.
+            BreakMeet nasce per aiutare street dancer a trovare compagni di
+            ballo ovunque si trovino, in tutta europa.
           </p>
         </Col>
 

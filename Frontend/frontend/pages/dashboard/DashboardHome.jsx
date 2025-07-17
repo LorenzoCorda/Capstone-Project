@@ -20,7 +20,6 @@ const DashboardHome = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // 1. Fetch user info
   useEffect(() => {
     const fetchUser = async () => {
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
@@ -35,7 +34,6 @@ const DashboardHome = () => {
     fetchUser();
   }, []);
 
-  // 2. Fetch recent posts
   useEffect(() => {
     const fetchRecentPosts = async () => {
       const res = await fetch(
@@ -102,7 +100,6 @@ const DashboardHome = () => {
     <div className="p-4">
       <h2 className="mb-4 text-center">Benvenuto nella tua Dashboard</h2>
 
-      {/* POPUP per bio/città mancante */}
       <Modal show={showPrompt} onHide={() => setShowPrompt(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Completa il tuo profilo</Modal.Title>
@@ -124,7 +121,6 @@ const DashboardHome = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* POST RECENTI */}
       <h4 className="mb-3">Allenamenti recenti</h4>
       <Row>
         {recentPosts.map((post) => {

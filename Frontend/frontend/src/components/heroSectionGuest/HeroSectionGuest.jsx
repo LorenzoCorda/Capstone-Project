@@ -13,7 +13,7 @@ const HeroSectionGuest = () => {
     <>
       <div className="hero-section position-relative text-light overflow-hidden">
         <img
-          src="/images/BboyPositionFreeze.JPG"
+          src="/images/BboyPositionFreezeMod.jpg"
           alt="Hero"
           className="hero-img"
         />
@@ -22,9 +22,8 @@ const HeroSectionGuest = () => {
           <h1 className="display-2 fw-bold">BreakMeet</h1>
         </div>
         <div className="custom-p-btn text-center">
-          <p className="">
-            Scopri, crea o unisciti a sessioni di allenamento nella tua città.
-            {/* Connetti ballerini. Trova sessioni. Unisciti alla crew. */}
+          <p>
+            Scopri, crea o unisciti a sessioni di street dance nella tua città.
           </p>
           <div className="mt-4">
             <Button
@@ -45,7 +44,6 @@ const HeroSectionGuest = () => {
         </div>
       </div>
 
-      {/* Modali */}
       <SignUpModal show={showSignUp} handleClose={() => setShowSignUp(false)} />
       <LoginModal show={showLogin} handleClose={() => setShowLogin(false)} />
     </>

@@ -3,9 +3,6 @@ import "./FeaturesSectionGuest.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
-/* import firstPhoto from "../../../public/DM.jpg";
-import secondPhoto from "../../../public/Me.jpg";
-import thirdPhoto from "../../../public/Dirty.jpg"; */
 
 const FeaturesSectionGuest = () => {
   useEffect(() => {

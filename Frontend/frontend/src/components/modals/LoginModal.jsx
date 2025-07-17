@@ -62,49 +62,6 @@ const LoginModal = ({ show, handleClose }) => {
       setLoading(false);
     }
   };
-  /*  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    setError("");
-
-    try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(
-          data.error?.general ||
-            data.error ||
-            data.message ||
-            "Email o password sbagliate"
-        );
-      }
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Errore durante il login");
-      }
-
-      const { token, user } = data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      handleModalClose();
-      navigate("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError(err.message || "Errore durante il login");
-
-      setPassword("");
-    } finally {
-      setLoading(false);
-    }
-  }; */
 
   return (
     <Modal show={show} onHide={handleModalClose} centered>
@@ -161,10 +118,6 @@ const LoginModal = ({ show, handleClose }) => {
               "Accedi"
             )}
           </Button>
-
-          {/*  <Button variant="primary" type="submit" className="w-100">
-            Accedi
-          </Button> */}
         </Form>
       </Modal.Body>
     </Modal>

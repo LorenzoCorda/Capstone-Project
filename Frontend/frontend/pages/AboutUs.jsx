@@ -49,7 +49,7 @@ const AboutPage = () => {
                     creare sessioni.
                   </li>
                   <li>
-                    <strong>Autenticità:</strong> ogni stile, ogni background è
+                    <strong>Inclusività:</strong> ogni stile, ogni background è
                     benvenuto.
                   </li>
                 </ul>
@@ -69,7 +69,7 @@ const AboutPage = () => {
               <img
                 src="/images/Me2.0.jpg"
                 alt="Founder breaking"
-                className="img-fluid rounded shadow"
+                className="img-fluid align-items-center rounded shadow"
                 style={{
                   height: "500px",
                 }}
