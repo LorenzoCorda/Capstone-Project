@@ -42,8 +42,6 @@ const getParticipantsByPostIdService = async (postId) => {
   return participations;
 };
 
-// Visualizza partecipazioni dell'utente autenticato
-
 const getUserParticipationsService = async (userId) => {
   const participations = await Participation.find({ userId })
     .populate({

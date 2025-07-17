@@ -15,6 +15,7 @@ const DEFAULT_PROFILE_IMAGE =
   "https://res.cloudinary.com/dr2q63hgn/image/upload/v1751541166/user_oqtfxr.png";
 
 // Ottieni tutti gli utenti o ricerca
+
 const getAllUsersController = async (request, response) => {
   try {
     const {
@@ -33,20 +34,16 @@ const getAllUsersController = async (request, response) => {
       Number(pageSize)
     );
 
-    if (!users || users.length === 0) {
-      return response.status(404).send({
-        statusCode: 404,
-        message: "Utenti non trovati",
-      });
-    }
-
     response.status(200).send({
       page: Number(page),
       totalPages,
       totalUsers,
       users,
       statusCode: 200,
-      message: "Utenti trovati con successo",
+      message:
+        users.length === 0
+          ? "Nessun utente trovato"
+          : "Utenti trovati con successo",
     });
   } catch (error) {
     response.status(500).send({
