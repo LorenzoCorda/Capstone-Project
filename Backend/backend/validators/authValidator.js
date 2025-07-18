@@ -26,7 +26,7 @@ const registerSchema = Joi.object({
     .required()
     .messages({
       "string.pattern.base":
-        "La password deve contenere almeno una lettera e un numero",
+        "La password deve essere senza caratteri speciali e con almeno una lettera e un numero",
     }),
 });
 
@@ -37,7 +37,7 @@ const loginSchema = Joi.object({
   }),
   password: Joi.string().min(6).required().messages({
     "string.empty": "La password è obbligatoria",
-    "string.min": "La password deve avere almeno 6 caratteri",
+    "string.min": "La password deve contenere almeno 6 caratteri",
   }),
 });
 
