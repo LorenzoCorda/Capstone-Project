@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Form, Button, Spinner, Alert, Card } from "react-bootstrap";
+import { useState, useEffect, useRef } from "react";
+import { Form, Button, Spinner, Card, Alert } from "react-bootstrap";
 
 const NewPost = () => {
   const [form, setForm] = useState({
@@ -11,9 +11,9 @@ const NewPost = () => {
   });
 
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const autocompleteRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -44,15 +44,15 @@ const NewPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
     setSuccess(false);
     setLoading(true);
 
     try {
-      const date = new Date(form.date);
-      const year = date.getFullYear();
+      const dateObj = new Date(form.date);
+      const year = dateObj.getFullYear();
       if (year < 2025 || year.toString().length !== 4) {
-        setError("Inserisci un anno valido dal 2025 in poi (4 cifre)");
+        setErrors({ date: "Inserisci un anno valido dal 2025 in poi" });
         setLoading(false);
         return;
       }
@@ -65,10 +65,7 @@ const NewPost = () => {
       formData.append("address", form.address);
       formData.append("date", form.date);
       formData.append("maxParticipants", form.maxParticipants);
-
-      if (image) {
-        formData.append("image", image);
-      }
+      if (image) formData.append("image", image);
 
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/posts`, {
         method: "POST",
@@ -79,7 +76,14 @@ const NewPost = () => {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Errore nella creazione");
+      if (!res.ok) {
+        if (data.errors) {
+          setErrors(data.errors);
+        } else {
+          setErrors({ general: data.message || "Errore nella creazione" });
+        }
+        return;
+      }
 
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -95,7 +99,7 @@ const NewPost = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
       if (autocompleteRef.current) autocompleteRef.current.value = "";
     } catch (err) {
-      setError(err.message);
+      setErrors({ general: err.message });
     } finally {
       setLoading(false);
     }
@@ -103,107 +107,107 @@ const NewPost = () => {
 
   return (
     <div className="new-post">
-      <h2 className="mb-4">Crea un nuovo allenamento</h2>
+      <h2 className="mb-4 text-center">Crea un nuovo allenamento</h2>
       <Card className="p-3">
-        <Form onSubmit={handleSubmit} encType="multipart/form-data">
+        <Form onSubmit={handleSubmit}>
+          {image && (
+            <div className="d-flex flex-column align-items-center text-center mb-3">
+              <img
+                src={URL.createObjectURL(image)}
+                alt="preview"
+                style={{
+                  width: "100%",
+                  maxWidth: "200px",
+                  aspectRatio: "1 / 1",
+                  objectFit: "cover",
+                  borderRadius: "12px",
+                  border: "1px solid #dee2e6",
+                }}
+              />
+              <Button
+                variant="outline-danger"
+                onClick={handleRemoveImage}
+                className="mt-2"
+              >
+                Rimuovi immagine
+              </Button>
+            </div>
+          )}
+
           <Form.Group className="mb-3">
-            <Form.Label>Immagine del post</Form.Label>
-            {image && (
-              <div className="mt-2 d-flex flex-column align-items-center">
-                <p className="mb-1">Anteprima:</p>
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="Anteprima"
-                  style={{
-                    width: "100%",
-                    maxWidth: "200px",
-                    aspectRatio: "1 / 1",
-                    objectFit: "cover",
-                    borderRadius: "12px",
-                    border: "1px solid #dee2e6",
-                  }}
-                />
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  className="mt-2"
-                  onClick={handleRemoveImage}
-                >
-                  Rimuovi immagine
-                </Button>
-              </div>
-            )}
+            <Form.Label>Immagine</Form.Label>
             <Form.Control
               type="file"
-              className="mt-4"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
               ref={fileInputRef}
-              required
+              onChange={(e) => setImage(e.target.files[0])}
             />
           </Form.Group>
 
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-3">
             <Form.Label>Titolo</Form.Label>
             <Form.Control
               type="text"
               name="title"
               value={form.title}
               onChange={handleChange}
-              required
             />
+            {errors.title && <div className="text-danger">{errors.title}</div>}
           </Form.Group>
 
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-3">
             <Form.Label>Descrizione</Form.Label>
             <Form.Control
               as="textarea"
               name="description"
               value={form.description}
               onChange={handleChange}
-              required
             />
+            {errors.description && (
+              <div className="text-danger">{errors.description}</div>
+            )}
           </Form.Group>
 
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-3">
             <Form.Label>Indirizzo</Form.Label>
-            <input
+            <Form.Control
               type="text"
+              name="address"
               ref={autocompleteRef}
-              placeholder="Inserisci un indirizzo"
-              value={form.address}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, address: e.target.value }))
-              }
-              className="form-control"
-              required
+              defaultValue={form.address}
+              onChange={handleChange}
             />
+            {errors.address && (
+              <div className="text-danger">{errors.address}</div>
+            )}
           </Form.Group>
 
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-3">
             <Form.Label>Data e ora</Form.Label>
             <Form.Control
               type="datetime-local"
               name="date"
               value={form.date}
               onChange={handleChange}
-              required
             />
+            {errors.date && <div className="text-danger">{errors.date}</div>}
           </Form.Group>
 
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-3">
             <Form.Label>Max partecipanti</Form.Label>
             <Form.Control
               type="number"
               name="maxParticipants"
-              min="1"
               value={form.maxParticipants}
               onChange={handleChange}
-              required
             />
+            {errors.maxParticipants && (
+              <div className="text-danger">{errors.maxParticipants}</div>
+            )}
           </Form.Group>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {errors.general && (
+            <div className="alert alert-danger">{errors.general}</div>
+          )}
           {success && (
             <Alert variant="success">Post creato con successo!</Alert>
           )}

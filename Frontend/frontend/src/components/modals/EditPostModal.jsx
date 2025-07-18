@@ -12,7 +12,8 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
 
   const [existingImage, setExistingImage] = useState("");
   const [newImage, setNewImage] = useState(null);
-  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
   const [loading, setLoading] = useState(false);
   const autocompleteRef = useRef();
 
@@ -31,6 +32,8 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
 
       setExistingImage(postData.image || "");
       setNewImage(null);
+      setFieldErrors({});
+      setGeneralError("");
     }
   }, [postData]);
 
@@ -51,13 +54,17 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
 
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
-      setForm((prev) => ({ ...prev, address: place.formatted_address || "" }));
+      setForm((prev) => ({
+        ...prev,
+        address: place.formatted_address || "",
+      }));
     });
   }, [autocompleteRef.current, show]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleImageChange = (e) => {
@@ -71,8 +78,33 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
+    setFieldErrors({});
+    setGeneralError("");
+
+    const clientErrors = {};
+    if (form.title.trim().length < 2) {
+      clientErrors.title = "Il titolo deve contenere almeno 2 caratteri";
+    }
+    if (form.description.trim().length < 5) {
+      clientErrors.description =
+        "La descrizione deve contenere almeno 5 caratteri";
+    }
+    if (!form.address.trim()) {
+      clientErrors.address = "L'indirizzo è obbligatorio";
+    }
+    if (!form.date) {
+      clientErrors.date = "La data è obbligatoria";
+    }
+    if (!form.maxParticipants || parseInt(form.maxParticipants) < 1) {
+      clientErrors.maxParticipants = "Almeno 1 partecipante richiesto";
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors);
+      setLoading(false);
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token");
@@ -104,15 +136,16 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        const errorMsg =
-          data?.data?.[0]?.msg || data?.message || "Errore aggiornamento";
-        throw new Error(errorMsg);
+        if (data.errors) {
+          setFieldErrors(data.errors);
+        }
+        throw new Error(data.message || "Errore durante l'aggiornamento");
       }
 
       onSave(data.data);
       handleClose();
     } catch (err) {
-      setError(err.message);
+      setGeneralError(err.message);
     } finally {
       setLoading(false);
     }
@@ -125,6 +158,7 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit} encType="multipart/form-data">
+          {/* Immagine */}
           <Form.Group className="mb-3">
             <Form.Label>Immagine</Form.Label>
             {(newImage || existingImage) && (
@@ -165,8 +199,12 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
               name="title"
               value={form.title}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.title}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.title}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -176,8 +214,12 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
               name="description"
               value={form.description}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.description}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.description}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -189,8 +231,12 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
               onChange={handleChange}
               ref={autocompleteRef}
               placeholder="Inserisci un indirizzo"
+              isInvalid={!!fieldErrors.address}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.address}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -200,10 +246,14 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
               name="date"
               value={form.date}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.date}
               required
               min="2025-01-01T00:00"
               max="2050-12-31T23:59"
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.date}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -213,12 +263,16 @@ const EditPostModal = ({ show, handleClose, postData, onSave }) => {
               name="maxParticipants"
               value={form.maxParticipants}
               onChange={handleChange}
-              required
+              isInvalid={!!fieldErrors.maxParticipants}
               min="1"
+              required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.maxParticipants}
+            </Form.Control.Feedback>
           </Form.Group>
 
-          {error && <p className="text-danger">{error}</p>}
+          {generalError && <p className="text-danger">{generalError}</p>}
 
           <Button type="submit" disabled={loading} variant="primary">
             {loading ? <Spinner size="sm" animation="border" /> : "Salva"}

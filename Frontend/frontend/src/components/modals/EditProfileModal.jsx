@@ -19,6 +19,7 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
   const [removeImage, setRemoveImage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     if (userData) {
@@ -33,12 +34,14 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
       setPreviewImage(userData.profileImage || DEFAULT_IMAGE);
       setNewImageFile(null);
       setRemoveImage(false);
+      setFieldErrors({});
     }
   }, [userData, show]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleImageUpload = (e) => {
@@ -63,6 +66,7 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setFieldErrors({});
 
     try {
       const token = localStorage.getItem("token");
@@ -96,7 +100,11 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Errore aggiornamento");
+
+      if (!res.ok) {
+        if (data.errors) setFieldErrors(data.errors);
+        throw new Error(data.message || "Errore aggiornamento");
+      }
 
       onSave(data.data);
       handleClose();
@@ -160,8 +168,12 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
               name="nome"
               value={form.nome}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.name}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.name}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -170,8 +182,12 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
               name="username"
               value={form.username}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.username}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.username}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -181,8 +197,12 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
               name="bio"
               value={form.bio}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.bio}
               maxLength={200}
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.bio}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -191,8 +211,12 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
               name="city"
               value={form.city}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.city}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.city}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -201,8 +225,12 @@ const EditProfileModal = ({ show, handleClose, userData, onSave }) => {
               name="styles"
               value={form.styles}
               onChange={handleChange}
+              isInvalid={!!fieldErrors.styles}
               required
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.styles}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Button

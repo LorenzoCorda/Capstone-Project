@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // 👈 IMPORTA
+import { useNavigate } from "react-router-dom";
 
 const LoginModal = ({ show, handleClose }) => {
   const [email, setEmail] = useState("");
@@ -38,24 +38,26 @@ const LoginModal = ({ show, handleClose }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Email o password sbagliate. Riprova.");
-      }
-      if (!data.user) {
-        throw new Error("Utente non trovato. Registrati prima di accedere.");
-      }
-
-      if (!data.user.isVerified) {
-        throw new Error("Devi prima verificare la tua email.");
+        const errorMessage =
+          data.message ||
+          data.error?.general ||
+          data.error?.message ||
+          "Errore durante il login";
+        throw new Error(errorMessage);
       }
 
       const { token, user } = data;
+
+      if (!user.isVerified) {
+        throw new Error("Devi prima verificare la tua email.");
+      }
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       handleModalClose();
       navigate("/dashboard");
     } catch (err) {
-      console.error(err);
+      console.error("error login", err);
       setError(err.message || "Errore durante il login");
       setPassword("");
     } finally {

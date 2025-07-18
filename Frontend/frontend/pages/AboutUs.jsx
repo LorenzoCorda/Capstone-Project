@@ -27,13 +27,16 @@ const AboutPage = () => {
               <div className="mb-5">
                 <h2 className="custom-question">Chi c’è dietro BreakMeet?</h2>
                 <p>
-                  Sono Lorenzo, sviluppatore e breaker. Dopo aver vissuto
-                  qualche mese all'estero , mi sono trovato a cercare compagni
-                  di allenamento, è stato molto difficile, senza passaparola era
-                  impossibile trovarli, ma di questi tempi il passaparola non
-                  basta più, ecco perchè è nata l’idea di BreakMeet: una
-                  piattaforma pensata
-                  <strong> da ballerino, per ballerini</strong>.
+                  BreakMeet è un'idea che si è accesa in Irlanda. <br />
+                  <br />
+                  Conoscere altri breaker in giro per il mondo è un'esperienza
+                  incredibile, ma anche estremamente difficile. Ci si incontrava
+                  solo tramite passaparola, e io sento l'esigenza di connetterci
+                  sul serio. <br />
+                  <br />
+                  Io sono Lorenzo, breaker e sviluppatore, e questo è BreakMeet.
+                  Creato
+                  <strong> dai ballerini, per ballerini</strong>.
                 </p>
               </div>
 

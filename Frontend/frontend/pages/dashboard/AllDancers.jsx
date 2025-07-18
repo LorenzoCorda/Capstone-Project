@@ -86,7 +86,7 @@ const AllDancers = () => {
 
   return (
     <div>
-      <h3 className="mb-4">Tutti i ballerini</h3>
+      <h3 className="mb-4 text-center">Tutti i ballerini</h3>
 
       <Form className="mb-4">
         <Form.Control

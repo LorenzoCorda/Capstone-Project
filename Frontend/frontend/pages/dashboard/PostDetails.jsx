@@ -98,8 +98,8 @@ const PostDetails = () => {
             <h2>{post.title}</h2>
             <p>{post.description}</p>
             <p>
-              <strong>Luogo:</strong> {post.location?.city},{" "}
-              {post.location?.address}
+              <strong>Luogo:</strong> {post.location?.city || ""}{" "}
+              {post.location?.address || ""}
             </p>
             <p>
               <strong>Data:</strong> {new Date(post.date).toLocaleString()}
@@ -122,7 +122,7 @@ const PostDetails = () => {
                         className="d-flex align-items-center"
                       >
                         <Image
-                          src={p.userId.profileImage || DEFAULT_IMAGE}
+                          src={p.userId?.profileImage || DEFAULT_IMAGE}
                           roundedCircle
                           style={{
                             width: "40px",
@@ -132,7 +132,10 @@ const PostDetails = () => {
                           className="me-3"
                         />
                         <div>
-                          <strong>{p.userId.name}</strong> @{p.userId.username}
+                          <strong>
+                            {p.userId?.name || "Nome sconosciuto"}
+                          </strong>{" "}
+                          @{p.userId?.username || "username"}
                         </div>
                       </ListGroup.Item>
                     ))}

@@ -129,7 +129,7 @@ const AllPosts = () => {
   return (
     <div className="overflow-hidden">
       <div className="container">
-        <h3 className="mb-4">Tutti gli allenamenti</h3>
+        <h3 className="mb-4 text-center">Tutti gli allenamenti</h3>
         <Row className="g-3">
           {posts.map((post) => {
             const isAuthor = post.author && post.author._id === currentUser._id;

@@ -1,18 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  Modal,
-  Button,
-  Row,
-  Col,
-  Card,
-  Spinner,
-  Alert,
-  Badge,
-} from "react-bootstrap";
+import { Button, Row, Col, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const DashboardHome = () => {
-  const [showPrompt, setShowPrompt] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [recentPosts, setRecentPosts] = useState([]);
   const [participatedIds, setParticipatedIds] = useState(new Set());
@@ -20,20 +10,25 @@ const DashboardHome = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  // FETCH UTENTE
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setCurrentUser(data);
-        if (!data.bio || !data.city) setShowPrompt(true);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setCurrentUser(data);
+        }
+      } catch (err) {
+        console.error("Errore nel recupero utente:", err);
       }
     };
     fetchUser();
   }, []);
 
+  // FETCH POST & PARTECIPAZIONI
   useEffect(() => {
     const fetchRecentPosts = async () => {
       const res = await fetch(
@@ -98,30 +93,9 @@ const DashboardHome = () => {
 
   return (
     <div className="p-4">
-      <h2 className="mb-4 text-center">Benvenuto nella tua Dashboard</h2>
+      <h1 className="mb-5 text-center">Benvenuto nella tua Dashboard</h1>
 
-      <Modal show={showPrompt} onHide={() => setShowPrompt(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Completa il tuo profilo</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Per farti conoscere nella tua zona, aggiungi città e biografia al tuo
-          profilo!
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPrompt(false)}>
-            Salta
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => navigate("/dashboard/profile")}
-          >
-            Aggiungi ora
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <h4 className="mb-3">Allenamenti recenti</h4>
+      <h2 className="mb-3 text-center">Allenamenti recenti</h2>
       <Row>
         {recentPosts.map((post) => {
           const isParticipating = participatedIds.has(post._id);
@@ -140,10 +114,7 @@ const DashboardHome = () => {
                   <Card.Img
                     variant="top"
                     src={post.image}
-                    style={{
-                      height: "200px",
-                      objectFit: "cover",
-                    }}
+                    style={{ height: "200px", objectFit: "cover" }}
                   />
                 )}
                 <Card.Body>

@@ -111,7 +111,7 @@ const MyPosts = () => {
 
   return (
     <div className="my-posts">
-      <h3 className="mb-4">I miei allenamenti</h3>
+      <h3 className="mb-4 text-center">I miei allenamenti</h3>
       <Row>
         {paginatedPosts.map((post) => (
           <Col

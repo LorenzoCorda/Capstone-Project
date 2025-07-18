@@ -85,7 +85,7 @@ const ParticipatedPosts = () => {
 
   return (
     <div>
-      <h3 className="mb-4">Allenamenti a cui partecipi</h3>
+      <h3 className="mb-4 text-center">Allenamenti a cui partecipi</h3>
       <Row>
         {paginatedPosts
           .filter((post) => post)

@@ -59,7 +59,7 @@ const DashboardLayout = () => {
           className="sidebar d-flex flex-column align-items-center p-1"
           style={{
             position: "sticky",
-            top: 0,
+            top: 20,
             height: "100vh",
             zIndex: 1000,
             backgroundColor: "#fff",
