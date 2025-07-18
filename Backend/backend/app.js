@@ -14,7 +14,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://capstone-project-bice-nu.vercel.app",
+    origin: [
+      "http://localhost:5173",
+      "https://capstone-project-bice-nu.vercel.app",
+    ],
     credentials: true,
     allowedHeaders: ["Authorization", "Content-Type"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],

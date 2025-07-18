@@ -52,6 +52,10 @@ const signupService = async (userData, imagePath) => {
 const loginService = async (email, password) => {
   const user = await User.findOne({ email });
 
+  if (!user) {
+    throw new Error("Utente non trovato. Registrati prima di accedere.");
+  }
+
   if (!user.isVerified) {
     throw new Error("Email non verificata. Controlla la tua casella di posta.");
   }

@@ -6,6 +6,7 @@ const {
   updateTrainingPostService,
   deleteTrainingPostService,
 } = require("../services/trainingPost.service");
+const { updatePostSchema } = require("../validators/trainingPostValidator");
 
 // prenti tutti i post
 const getAllTrainingPostController = async (req, res) => {
@@ -85,14 +86,20 @@ const getTrainingPostByIdController = async (req, res) => {
 
 const createTrainingPostController = async (req, res) => {
   try {
+    const { title, description, address, date, maxParticipants } = req.body;
+
+    const imageUrl = req.file?.path || null;
+
     const updateData = {
-      ...req.body,
+      title,
+      description,
+      date,
+      maxParticipants,
       location: {
-        address: req.body.address || "",
+        address: address || "",
       },
     };
 
-    const imageUrl = req.file?.path;
     const post = await createTrainingPostService(
       updateData,
       req.user._id,
@@ -119,6 +126,7 @@ const updateTrainingPostController = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // qui Joi ha già validato req.body.address come stringa
     const updateData = {
       ...req.body,
       location: {

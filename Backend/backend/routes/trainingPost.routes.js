@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const authenticateToken = require("../middlewares/authenticateToken");
-const validateRequest = require("../middlewares/validateRequest");
+const validate = require("../middlewares/validate"); // custom middleware Joi
+const { uploadPostImage } = require("../utils/multer");
 const {
   getAllTrainingPostController,
   getMyTrainingPostsController,
@@ -11,42 +12,33 @@ const {
   updateTrainingPostController,
   deleteTrainingPostController,
 } = require("../controller/trainingPost.controller");
-const { uploadPostImage } = require("../utils/multer");
-const { validateUpdatePost } = require("../validators/trainingPostValidator");
 
-//AllPosts
-router.get("/", /* validateRequest, */ getAllTrainingPostController);
+const {
+  updatePostSchema,
+  createPostSchema,
+} = require("../validators/trainingPostValidator");
+
+router.get("/", getAllTrainingPostController);
 router.get("/my-posts", authenticateToken, getMyTrainingPostsController);
 
-//FindByIdPost
 router.get("/:id", getTrainingPostByIdController);
-
-//CreatePost
 
 router.post(
   "/",
   authenticateToken,
   uploadPostImage.single("image"),
-  validateRequest,
+  validate(createPostSchema),
   createTrainingPostController
 );
 
-//UpdatePost
 router.put(
   "/:id",
-  uploadPostImage.single("image"),
   authenticateToken,
-  validateUpdatePost,
-  validateRequest,
+  uploadPostImage.single("image"),
+  validate(updatePostSchema),
   updateTrainingPostController
 );
 
-//DeletePost
-router.delete(
-  "/:id",
-  authenticateToken,
-  validateRequest,
-  deleteTrainingPostController
-);
+router.delete("/:id", authenticateToken, deleteTrainingPostController);
 
 module.exports = router;
